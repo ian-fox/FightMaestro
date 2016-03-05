@@ -51,8 +51,6 @@ function drawGuides(){
 function Character() {
     this.lane = 1;
     this.health = 100;
-    this.animation = "idle";
-    this.frame = 0;
     this.sheet = new createjs.SpriteSheet({
             images: ['./res/char.png'],
             frames: {
@@ -62,11 +60,13 @@ function Character() {
             animations: {
                 idle: {
                     frames: [0, 1, 2, 3],
-                    speed: 0.05
+                    speed: 0.05,
+                    next: "idle"
                 },
                 shoot: {
                     frames: [4, 5, 6, 8],
-                    speed: 0.05
+                    speed: 0.05,
+                    next: "idle"
                 },
                 die: {
                     frames: [9, 10, 11, 12, 13],
@@ -85,18 +85,10 @@ function Character() {
     this.sprite.gotoAndPlay("idle");
     // Update stage will render next frame
     this.draw = function() {
-        this.frame++;
-        if ((this.animation === "idle" || this.animation === "shoot") && this.frame > 29) {
-            this.frame = 0;
-            this.animation = "idle";
-            this.sprite.gotoAndPlay("idle");
-        }
         stage.update();
     }
 
     this.shoot = function() {
-        this.frame = 0;
-        this.animation = "shoot";
         this.sprite.gotoAndPlay("shoot");
     }
 }
