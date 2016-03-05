@@ -1,4 +1,9 @@
 body {
     background-color: #36454F;
 }
-
+#gameOver{
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    width: 300px;
+}

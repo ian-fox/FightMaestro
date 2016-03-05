@@ -4,7 +4,7 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 9000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 1000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var V_OFFSET =100;
 var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
@@ -90,13 +90,12 @@ function initScore () {
 function changeScore(delta) {
     score += delta;
     scoreElt.innerHTML = score;
-
 }
 
 function initLives () {
-    lives = 3;
     livesElt=document.getElementById("lives");
-    lives.innerHTML = lives;
+    lives = 3;
+    livesElt.innerHTML = lives;
 }
 
 function changeLives(delta) {
@@ -105,19 +104,6 @@ function changeLives(delta) {
     if (lives==0)
         gameOver();
 }
-
-function drawGuides(){
-    if (guides.length > 0){
-        guides.length =0;
-    }
-    for (var i = 1; i<= 1+lanes; i+=3){
-        var rect = new createjs.Shape();
-        rect.graphics.beginFill("black").drawRect(0,i*LINE_HEIGHT, CANVAS_WIDTH, 5);
-        stage.addChild(rect);
-        guides.push(rect);
-    }
-}
-
 
 /////////////////////////////////////////////////
 // PLAYER 
@@ -164,6 +150,9 @@ function Character() {
     this.draw = function() {
         stage.update();
     }
+    this.remove = function () {
+        stage.removeChild(this.sprite);
+    }
 
     this.checkCollision = function () {
         var first = getFirstEnemyByLane(lane);
@@ -179,6 +168,14 @@ function Character() {
     this.shoot = function() {
         this.sprite.gotoAndPlay("shoot");
     }
+}
+
+function initPlayer() {
+    if (player){
+        player.remove();
+        delete player;
+    }
+    player = new Character();
 }
 
 /////////////////////////////////////////////////
@@ -327,6 +324,7 @@ function initEnemies () {
         entry.remove();
         return false;
     });
+    oldestEnemy=0;
     for (var i =0; i < 10; i++){
         enemies.push(generateEnemy());
     }
@@ -412,19 +410,23 @@ function onPose(gesture) {
 
 function gameOver() {
     createjs.Ticker.removeAllEventListeners();
-    //do css html popup shitter here
+    var elt = document.createElement("DIV");
+    elt.appendChild(document.createTextNode("Game Over Man"));
+    elt.id="gameOver";
+    elt.style="font-size:64pt";
+    document.body.appendChild(elt);
 
+    createjs.Ticker.removeAllEventListeners();
     setTimeout(initGame, 2000);
 }
 
 function initGame() {
     // BEGIN GAME STATE INITIALIZATION
     startTime = new Date().getTime();
-    player = new Character();
     initScore();
     initLives();
     initEnemies();
-    drawGuides();
+    initPlayer();
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", player.draw.bind(player));
     createjs.Ticker.addEventListener("tick", drawEnemies);
@@ -442,15 +444,14 @@ function init () {
         canvas.height=window.innerHeight-150;
         CANVAS_WIDTH=canvas.width;
         CANVAS_HEIGHT=canvas.height;
-        drawGuides();
         background.resize.bind(background);
         parallax.resize.bind(parallax);
     }
     resizeCanvas();
 
     window.addEventListener('resize', resizeCanvas, false);
-    initGame();
 
+    initGame();
 }
 
 window.onload = init;
