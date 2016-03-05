@@ -64,11 +64,11 @@ function Character() {
                 },
                 shoot: {
                     frames: [4, 5, 6, 8],
-                    speed: 0.125
+                    speed: 0.05
                 },
                 die: {
                     frames: [9, 10, 11, 12, 13],
-                    speed: 0.125
+                    speed: 0.05
                 }
             }
         });
@@ -84,12 +84,18 @@ function Character() {
     // Update stage will render next frame
     this.draw = function() {
         this.frame++;
-        if ((this.animation === "idle" || this.animation === "shoot") && this.frame > 119) {
+        if ((this.animation === "idle" || this.animation === "shoot") && this.frame > 29) {
             this.frame = 0;
             this.animation = "idle";
             this.sprite.gotoAndPlay("idle");
         }
         stage.update();
+    }
+
+    this.shoot = function() {
+        this.frame = 0;
+        this.animation = "shoot";
+        this.sprite.gotoAndPlay("shoot");
     }
 }
 
@@ -202,7 +208,7 @@ function Enemy(hitTime, type, lane) {
             this.kill(-1);
         }
     }
-    this.setX();
+    this.setX();;
     // call this if this beat is killed
     this.kill = function (scoreChange) {
         this.dead=true;
@@ -267,7 +273,10 @@ function onPose(gesture) {
             player.setY();
             break;
         default:
-            createProjectile(types.indexOf(gesture));
+            player.shoot.bind(player)();
+            setTimeout(function() {
+                createProjectile(types.indexOf(gesture));
+            }, 400);
     }
 }
 
