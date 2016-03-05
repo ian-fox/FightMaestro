@@ -99,6 +99,8 @@ function initLives () {
 function changeLives(delta) {
     lives += delta;
     livesElt.innerHTML= lives;
+    if (lives==0)
+        gameOver();
 }
 
 function drawGuides(){
@@ -148,10 +150,6 @@ function Character() {
     this.sprite.y = 200;
     this.looseLife = function () {
         changeLives(-1);
-        if (lives<1){
-            // TODO game over animation thing
-            gameOver();
-        }
     }
     this.setY = function() {
         this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
@@ -165,7 +163,14 @@ function Character() {
     }
 
     this.checkCollision = function () {
-        //TODO collisions with enemies here
+        var first = getFirstEnemyByLane(lane);
+        var intersection = ndgmr.checkPixelCollision(this.sprite, first.enemy.enemy);
+        if (intersection) {
+            first.enemy.kill(1);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     this.shoot = function() {
@@ -275,10 +280,12 @@ function Enemy(hitTime, type, lane) {
         stage.removeChild(this.enemy);
     }
     this.setX = function () {
-        if (this.enemy.x >-50){
+        if (this.enemy.x >-150){
             this.enemy.x =CANVAS_WIDTH *  (startTime + this.hitTime - new Date().getTime())/ENEMY_SCREEN_CROSS_TIME;
         } else {
-            this.kill(-1);
+            this.dead=true;
+            changeLives(-1);
+            this.remove();
         }
     }
     this.setX();;
@@ -302,7 +309,7 @@ function getFirstEnemyByLane(lane) {
 function generateEnemy() {
     var lane= Math.floor(Math.random() * lanes);
     var type= Math.floor(Math.random() * types.length);
-    var time = Math.max(2000, Math.floor(Math.random() * 3000));
+    var time = Math.max(2000, Math.floor(Math.random() * 4000));
     if (oldestEnemy == 0) {
         oldestEnemy = START_DELAY;
     } else {
