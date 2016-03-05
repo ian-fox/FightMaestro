@@ -12,6 +12,7 @@ var badguys= ["fist", "lighting", "fireball"];
 var lanes = 3;
 var guides = [];// set of horizontal line guides for showing incoming jazz
 
+
 function Beat(hitTime, gesture, lane) {
     //Create a Shape DisplayObject.
     this.enemy= new createjs.Bitmap("res/car.png");
@@ -45,12 +46,21 @@ function drawGuides(){
     }
 }
 
+function getFirstEnemyByLane(lane) {
+    for (var i = 0; i < beatMap.length; i ++) {
+        if (beatMap[i].lane == lane){
+            return {enemy:beatMap[i], index:i};
+        }
+    }
+    return null;
+}
+
 
 function generateMap () {
     if (!beatMap.length) {
         for (var i =0; i < MAP_LENGTH; i+=MS_PER_BEAT* Math.max(Math.random()*3,1)){
-            var lane= Math.floor(Math.random() * 3);
-            var type= Math.floor(Math.random() * 3);
+            var lane= Math.floor(Math.random() * lanes);
+            var type= Math.floor(Math.random() * lanes);
             var beat = new Beat (i + START_DELAY, badguys[type], lane);
             beatMap.push(beat);
         }
@@ -88,7 +98,7 @@ function init () {
     createjs.Ticker.addEventListener("tick", drawBeats);
 }
 
-function onPos(gesture) {
+function onPose(gesture) {
     console.log(gesture);
 }
 
