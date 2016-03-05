@@ -17,6 +17,9 @@ var score = 0;
 var scoreElt;
 var player;
 
+/////////////////////////////////////////////////
+// GRAPHICS 
+/////////////////////////////////////////////////
 function initScore () {
     score = 0;
     scoreElt=document.getElementById("score");
@@ -29,6 +32,44 @@ function changeScore(delta) {
 
 }
 
+function drawGuides(){
+    if (guides.length > 0){
+        guides.length =0;
+    }
+    for (var i = 1; i<= 1+lanes; i+=3){
+        var rect = new createjs.Shape();
+        rect.graphics.beginFill("black").drawRect(0,i*LINE_HEIGHT, CANVAS_WIDTH, 5);
+        stage.addChild(rect);
+        guides.push(rect);
+    }
+}
+
+
+/////////////////////////////////////////////////
+// PLAYER 
+/////////////////////////////////////////////////
+function Character() {
+    this.lane = 1;
+    this.health = 100;
+    this.sprite = new createjs.Bitmap("res/char_rest.png");
+    this.sprite.x = 100;
+    this.sprite.y = 200;
+    this.setY = function() {
+        this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
+    }
+    // Add Shape instance to stage display list.
+    stage.addChild(this.sprite);
+    // Update stage will render next frame
+    this.draw = function() {
+        stage.update();
+    }
+}
+
+
+
+/////////////////////////////////////////////////
+// ENEMY RELATED STUFF
+/////////////////////////////////////////////////
 function Beat(hitTime, type, lane) {
     //Create a Shape DisplayObject.
     var image="res/";
@@ -77,37 +118,6 @@ function Beat(hitTime, type, lane) {
         });
     }
 }
-
-function Character() {
-    this.lane = 1;
-    this.health = 100;
-    this.sprite = new createjs.Bitmap("res/char_rest.png");
-    this.sprite.x = 100;
-    this.sprite.y = 200;
-    this.setY = function() {
-        this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
-    }
-    // Add Shape instance to stage display list.
-    stage.addChild(this.sprite);
-    // Update stage will render next frame
-    this.draw = function() {
-        stage.update();
-    }
-}
-
-
-function drawGuides(){
-    if (guides.length > 0){
-        guides.length =0;
-    }
-    for (var i = 1; i<= 1+lanes; i+=3){
-        var rect = new createjs.Shape();
-        rect.graphics.beginFill("black").drawRect(0,i*LINE_HEIGHT, CANVAS_WIDTH, 5);
-        stage.addChild(rect);
-        guides.push(rect);
-    }
-}
-
 function getFirstEnemyByLane(lane) {
     for (var i = 0; i < beatMap.length; i ++) {
         if (beatMap[i].lane == lane){
@@ -149,6 +159,28 @@ function drawBeats () {
 }
 
 
+
+/////////////////////////////////////////////////
+// INTERACTION WITH MYO 
+/////////////////////////////////////////////////
+function onPose(gesture) {
+    switch(gesture) {
+        case "move_left":
+            if (player.lane > 0) player.lane--;
+            player.setY();
+            break;
+        case "move_right":
+            if (player.lane < 2) player.lane++;
+            player.setY();
+            break;
+        default:
+            console.log(gesture);
+    }
+}
+
+/////////////////////////////////////////////////
+// INITIALIZATION
+/////////////////////////////////////////////////
 function init () {
     var canvas = document.getElementById("canvas");
     stage = new createjs.Stage("canvas");
@@ -172,21 +204,6 @@ function init () {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", player.draw);
     createjs.Ticker.addEventListener("tick", drawBeats);
-}
-
-function onPose(gesture) {
-    switch(gesture) {
-        case "move_left":
-            if (player.lane > 0) player.lane--;
-            player.setY();
-            break;
-        case "move_right":
-            if (player.lane < 2) player.lane++;
-            player.setY();
-            break;
-        default:
-            console.log(gesture);
-    }
 }
 
 window.onload = init;
