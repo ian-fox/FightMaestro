@@ -84,8 +84,6 @@ function Character() {
     // Update stage will render next frame
     this.draw = function() {
         this.frame++;
-        console.log(this.frame);
-        console.log(this.animation);
         if ((this.animation === "idle" || this.animation === "shoot") && this.frame > 119) {
             this.frame = 0;
             this.animation = "idle";
