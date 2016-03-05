@@ -31,7 +31,7 @@ Myo.on('connected', function(){
 Myo.on('pose', function(pose){
   switch(pose) {
     case "fist":
-      onPose("fist");
+      onPose("rock");
       break;
     case "fingers_spread":
       onPose("lightning");

@@ -174,6 +174,8 @@ function drawProjectiles() {
 }
 
 function createProjectile(type) {
+    console.log(type);
+    console.log(types[type]);
     var proj = new Projectile(player.lane, type);
     projectiles.push(proj);
 }
