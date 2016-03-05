@@ -18,6 +18,9 @@ var lives = 3;
 var livesElt;
 var player; 
 var projectiles = []; //array of players on the screen
+var stage;
+var background;
+var parallax;
 var enemySheets = {
     rock : new createjs.SpriteSheet({
         images: ['./res/rock.png'],
@@ -185,7 +188,7 @@ function Projectile (lane, type){
     this.lane = lane;
     this.lastUpdate = new Date().getTime();
     this.sheet = new createjs.SpriteSheet({
-            images: ['./res/Attacks.png'],
+            images: ['./res/attacks.png'],
             frames: {
                 width: 50, 
                 height: 50
@@ -335,7 +338,45 @@ function drawEnemies () {
     stage.update();
 }
 
+/////////////////////////////////////////////////
+// BACKGROUND
+/////////////////////////////////////////////////
+function Background() {
+    
+    this.draw = function() {
 
+    }
+
+    this.resize = function() {
+
+    }
+}
+
+function Parallax() {
+    this.file = document.createElement("img");
+    this.file.onload = "draw";
+    this.file.src="res/parallax.png"
+    this.sprites = [];
+
+    this.draw = function() {
+        for (i = 0 ; i < this.sprites.length; i++) {
+            this.sprites[i].X -= 10;
+            if (this.sprites[i].x < -512) this.sprites[i].x += 512*(this.sprites.length - 1);
+        }
+        stage.update();
+    };
+
+    this.resize = function() {
+        console.log("here");
+        this.sprites = [];
+        for (i = 0; i < CANVAS_WIDTH; i+= 512) {
+            this.sprites.append(new createjs.Bitmap(this.file));
+            this.sprites[this.sprites.length - 1].X = i;
+            this.sprites[this.sprites.length - 1].Y = 50;
+            stage.addChild(this.sprites[this.sprites.length - 1]);
+        }
+    };
+}
 
 /////////////////////////////////////////////////
 // INTERACTION WITH MYO 
@@ -387,17 +428,22 @@ function initGame() {
 function init () {
     var canvas = document.getElementById("canvas");
     stage = new createjs.Stage("canvas");
+    background = new Background();
+    parallax = new Parallax();
     function resizeCanvas (){
         canvas.width=window.innerWidth-20;
         canvas.height=window.innerHeight-150;
         CANVAS_WIDTH=canvas.width;
         CANVAS_HEIGHT=canvas.height;
         drawGuides();
+        background.resize.bind(background);
+        parallax.resize.bind(parallax);
     }
     resizeCanvas();
 
     window.addEventListener('resize', resizeCanvas, false);
     initGame();
+
 }
 
 window.onload = init;
