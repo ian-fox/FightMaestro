@@ -173,9 +173,8 @@ function onPose(gesture) {
             if (player.lane < 2) player.lane++;
             player.setY();
             break;
-        default:
-            console.log(gesture);
     }
+    console.log(gesture);
 }
 
 window.onload = init;

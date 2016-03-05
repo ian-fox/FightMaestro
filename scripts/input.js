@@ -40,10 +40,10 @@ Myo.on('pose', function(pose){
       onPose("fireball");
       break;
     case "wave_in":
-      Myo.myos[0].arm === "right" ? onPose("move_right") : onPose("move_right");
+      Myo.myos[0].arm === "left" ? onPose("move_right") : onPose("move_right");
       break;
     case "wave_out":
-      Myo.myos[0].arm === "right" ? onPose("move_left") : onPose("move_left");
+      Myo.myos[0].arm === "left" ? onPose("move_left") : onPose("move_left");
       break;
   }
 })
