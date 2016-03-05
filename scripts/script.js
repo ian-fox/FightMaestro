@@ -11,7 +11,8 @@ var ANIMATION_SPEED = {
     player: 0.1,
     fireball: 0.1,
     rock: 0.05,
-    lightning: 0.08
+    lightning: 0.08,
+    block: 0.2
 };
 var hitsounds = [];
 var spellsounds = [];
@@ -65,8 +66,8 @@ var enemySheets = {
             },
             dead: [15],
             block: {
-                frames: [8, 9, 9, 9],
-                speed: ANIMATION_SPEED.rock * 2,
+                frames: [8, 9, 9, 8],
+                speed: ANIMATION_SPEED.block,
                 next: "idle"
             }
         }
@@ -91,12 +92,12 @@ var enemySheets = {
             die: {
                 frames: [11, 12, 13, 14, 15],
                 speed: ANIMATION_SPEED.fireball,
-                next: dead
+                next: "dead"
             },
             dead: [15],
             block: {
-                frames: [9, 10, 10, 10],
-                speed: ANIMATION_SPEED.fire * 2,
+                frames: [9, 10, 10, 9],
+                speed: ANIMATION_SPEED.block,
                 next: "idle"
             }
         }
@@ -125,8 +126,8 @@ var enemySheets = {
             },
             dead: [15],
             block: {
-                frames: [8, 9, 9, 9],
-                speed: ANIMATION_SPEED.lightning * 2,
+                frames: [8, 9, 9, 8],
+                speed: ANIMATION_SPEED.block,
                 next: "idle"
             }
         }
@@ -280,6 +281,8 @@ function Projectile (lane, type){
             if (intersection) {
                 if (entry.type == this.type){
                     entry.kill(1);
+                } else {
+                    entry.enemy.gotoAndPlay("block");
                 }
                 return true;
             }
