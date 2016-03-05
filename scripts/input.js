@@ -35,7 +35,7 @@ Myo.on('hard_tap',function (){
 Myo.on('pose', function(pose){
   switch(pose) {
     case "fist":
-      onPose("rock");
+      onPose("lightning");
       break;
     case "fingers_spread":
       onPose("lightning");
