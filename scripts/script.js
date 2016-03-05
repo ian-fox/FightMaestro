@@ -4,7 +4,7 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 6000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 9000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var ANIMATION_SPEED = {
     player: 0.1,
@@ -121,7 +121,7 @@ function initScore () {
 
 function changeScore(delta) {
     score += delta;
-    scoreElthtml(score);
+    scoreElt.html(score);
 }
 
 function initLives () {
@@ -343,8 +343,7 @@ function generateEnemy() {
 
 function initEnemies () {
     enemies=enemies.filter(function (entry) {
-        entry.remove();
-        return false;
+        retern (!entry.dead);   
     });
     oldestEnemy=0;
     for (var i =0; i < 10; i++){
