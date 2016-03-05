@@ -14,6 +14,7 @@ var ANIMATION_SPEED = {
     lightning: 0.08
 };
 var hitsounds = [];
+var spellsounds = [];
 var V_OFFSET =0;
 var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
 var types= ["rock", "lightning", "fireball"];
@@ -471,6 +472,7 @@ function onPose(gesture) {
             player.shoot.bind(player)();
             setTimeout(function() {
                 createProjectile(types.indexOf(gesture));
+                playSound(gesture);
             }, 400);
     }
 }
@@ -645,7 +647,10 @@ function init () {
             {id:"hit2", src:"res/hitsounds/hit2.ogg"},
             {id:"hit3", src:"res/hitsounds/hit3.ogg"},
             {id:"hit4", src:"res/hitsounds/hit4.ogg"},
-            {id:"hit5", src:"res/hitsounds/hit5.ogg"}]);
+            {id:"hit5", src:"res/hitsounds/hit5.ogg"},
+            {id:"fireball", src:"res/spellcast/fireball.wav"},
+            {id:"lightning", src:"res/spellcast/lightning.wav"},
+            {id:"rock", src:"res/spellcast/rock.wav"}]);
 
     createjs.Sound.on("fileload", handleFileLoad);
     function handleFileLoad (event) {
@@ -654,6 +659,8 @@ function init () {
             theme.volume = 0.1;
         } else if (event.id.match(/hit*/)){
             hitsounds.push(event.id);
+        } else{
+            spellsounds[types.indexOf(event.id)];
         }
     }
 
