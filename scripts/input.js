@@ -29,7 +29,8 @@ Myo.on('connected', function(){
 });
 
 Myo.on('hard_tap',function (){
-    onPose("hard_tap");
+    console.log("hard tap");  
+    onPose("rock");
 });
 Myo.on('pose', function(pose){
   switch(pose) {
