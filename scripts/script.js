@@ -59,8 +59,10 @@ var enemySheets = {
             },
             die: {
                 frames: [12, 13, 14, 15],
-                speed: ANIMATION_SPEED.rock
-            }
+                speed: ANIMATION_SPEED.rock,
+                next: "dead"
+            },
+            dead: [15]
         }
     }),
     fireball : new createjs.SpriteSheet({
@@ -82,8 +84,10 @@ var enemySheets = {
             },
             die: {
                 frames: [11, 12, 13, 14, 15],
-                speed: ANIMATION_SPEED.fireball
-            }
+                speed: ANIMATION_SPEED.fireball,
+                next: dead
+            },
+            dead: [15]
         }
     }),
     lightning : new createjs.SpriteSheet({
@@ -105,8 +109,10 @@ var enemySheets = {
             },
             die: {
                 frames: [12, 13, 14, 15],
-                speed: ANIMATION_SPEED.lightning
-            }
+                speed: ANIMATION_SPEED.lightning,
+                next: "dead"
+            },
+            dead: [15]
         }
     })
 }
@@ -318,7 +324,7 @@ function Enemy(hitTime, type, lane) {
         this.dead=true;
         this.enemy.gotoAndPlay("die");
         changeScore(scoreChange);
-        setTimeout(this.remove.bind(this), 400);
+        setTimeout(this.remove.bind(this), 1000);
     }
 
     this.instakill = function() {
