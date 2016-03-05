@@ -108,13 +108,13 @@ var enemySheets = {
 /////////////////////////////////////////////////
 function initScore () {
     score = 0;
-    scoreElt=document.getElementById("score");
-    scoreElt.innerHTML = score;
+    scoreElt=$("#score");
+    scoreElt.html(score);
 }
 
 function changeScore(delta) {
     score += delta;
-    scoreElt.innerHTML = score;
+    scoreElthtml(score);
 }
 
 function initLives () {
@@ -125,7 +125,7 @@ function initLives () {
 
 function changeLives(delta) {
     lives += delta;
-    livesElt.innerHTML= lives;
+    livesElt.html(lives);
     if (lives==0)
         gameOver();
 }
@@ -508,6 +508,7 @@ function initMenu() {
     createjs.Ticker.addEventListener("tick", function() {
         background.draw.bind(background)();
         parallax.draw.bind(parallax)();
+        drawProjectiles();
         stage.update();
     });
     var chooseText = document.createElement("div");

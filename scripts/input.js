@@ -47,4 +47,3 @@ Myo.on('pose', function(pose){
       break;
   }
 })
-
