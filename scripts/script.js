@@ -112,6 +112,7 @@ function Projectile (lane, type){
     }
     this.checkCollision=function() {
         var first = getFirstEnemyByLane(lane);
+        //TODO WRITE COLLISION DETECTION
         //var intersection = ndgmr.checkPixelCollision(this.proj, first.enemy);
     }
 }
