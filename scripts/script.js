@@ -36,8 +36,8 @@ var MENU = true;
 var controlsText = 
     "Flick your wrist up or down to change lanes.<br><br>"
     + "Double tap to throw a fireball.<img src ='res/fireball-particle.png'></img><br>"
-    + "Spread your fingers to launch ball lightning.<img src='res/lightning-particle.png'></img><br>"
-    + "Make a fist to throw rocks<img src='res/rock-particle.png'></img><br><br>"
+    + "Spread your fingers to launch green lightning.<img src='res/lightning-particle.png'></img><br>"
+    + "Doubel tap your Myo to throw rocks<img src='res/rock-particle.png'></img><br><br>"
     + "Each enemy is color coded by the attack that kills them!.<br>";
 var enemySheets = {
     rock : new createjs.SpriteSheet({
