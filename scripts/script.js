@@ -79,8 +79,8 @@ function init () {
     createjs.Ticker.addEventListener("tick", drawBeats);
 }
 
-function onPose (gesture) {
+function onPos(gesture) {
     console.log(gesture);
-} 
+}
 
 window.onload = init;
