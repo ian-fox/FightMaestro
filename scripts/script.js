@@ -4,13 +4,13 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 1000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 6000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var ANIMATION_SPEED = {
-    player: 0.02,
-    fireball: 0.025,
-    rock: 0.01,
-    lightning: 0.02
+    player: 0.1,
+    fireball: 0.1,
+    rock: 0.05,
+    lightning: 0.08
 };
 var V_OFFSET =0;
 var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
@@ -20,7 +20,7 @@ var lanes = 3; // lanes of attack
 var guides = [];// set of horizontal line guides for showing incoming jazz
 var score = 0; 
 var scoreElt; //element to store the Score div
-var lives = 3;
+var lives = 99;
 var livesElt;
 var player; 
 var projectiles = []; //array of players on the screen
@@ -115,7 +115,7 @@ function changeScore(delta) {
 
 function initLives () {
     livesElt=document.getElementById("lives");
-    lives = 3;
+    lives = 99;
     livesElt.innerHTML = lives;
 }
 
@@ -157,7 +157,7 @@ function Character() {
     this.sprite = new createjs.Sprite(this.sheet);
     this.sprite.x = 25;
     this.sprite.y = V_OFFSET + 10 + 2 * LINE_HEIGHT;
-    this.looseLife = function () {
+    this.loseLife = function () {
         changeLives(-1);
     }
     this.setY = function() {
@@ -168,7 +168,7 @@ function Character() {
     this.sprite.gotoAndPlay("walk");
     // Update stage will render next frame
     this.draw = function() {
-        stage.update();
+        //stage.update();
     }
     this.remove = function () {
         stage.removeChild(this.sprite);
@@ -274,7 +274,6 @@ function drawProjectiles() {
         }
         return true;
     });
-    stage.update();
 }
 
 function createProjectile(type) {
@@ -308,7 +307,7 @@ function Enemy(hitTime, type, lane) {
             this.remove();
         }
     }
-    this.setX();;
+    this.setX();
     // call this if this beat is killed
     this.kill = function (scoreChange) {
         this.dead=true;
@@ -350,17 +349,14 @@ function initEnemies () {
     }
 }
 
-function drawEnemies () {
+function drawEnemies (lane) {
     if (enemies.length < 10){
         enemies.push(generateEnemy());
     }
     enemies = enemies.filter(function (entry) {
         entry.setX();
-        if (entry.dead)
-            return false;
-        return true;
+        return !entry.dead;
     });
-    stage.update();
 }
 
 /////////////////////////////////////////////////
@@ -374,10 +370,9 @@ function Background() {
 
     this.draw = function() {
         for (i = 0 ; i < this.sprites.length; i++) {
-            this.sprites[i].x -= 2;
+            this.sprites[i].x -= 7700/ENEMY_SCREEN_CROSS_TIME;
             if (this.sprites[i].x < -1313) this.sprites[i].x += 1313*(this.sprites.length);
         }
-        stage.update();
     };
 
     this.resize = function() {
@@ -402,7 +397,6 @@ function Parallax() {
             this.sprites[i].x -= 1;
             if (this.sprites[i].x < -512) this.sprites[i].x += 512*(this.sprites.length);
         }
-        stage.update();
     };
 
     this.resize = function() {
@@ -461,6 +455,16 @@ function gameOver() {
     setTimeout(initGame, 2000);
 }
 
+function drawEntities() {
+    //orderEnemies();
+    player.draw.bind(player)();
+    drawEnemies();
+    drawProjectiles();
+    parallax.draw.bind(parallax)();
+    background.draw.bind(background)();
+    stage.update();
+}
+
 function initGame() {
     // BEGIN GAME STATE INITIALIZATION
     startTime = new Date().getTime();
@@ -469,11 +473,7 @@ function initGame() {
     initEnemies();
     initPlayer();
     createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", player.draw.bind(player));
-    createjs.Ticker.addEventListener("tick", drawEnemies);
-    createjs.Ticker.addEventListener("tick", drawProjectiles);
-    createjs.Ticker.addEventListener("tick", parallax.draw.bind(parallax));
-    createjs.Ticker.addEventListener("tick", background.draw.bind(background));
+    createjs.Ticker.addEventListener("tick", drawEntities);
 }
 
 function init () {
