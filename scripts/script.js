@@ -331,7 +331,7 @@ function getLane(lane) {
 function generateEnemy() {
     var lane= Math.floor(Math.random() * lanes);
     var type= Math.floor(Math.random() * types.length);
-    var time = Math.max(2000, Math.floor(Math.random() * 4000));
+    var time = Math.max(3000, Math.floor(Math.random() * 5000));
     if (oldestEnemy == 0) {
         oldestEnemy = START_DELAY;
     } else {
