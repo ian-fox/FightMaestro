@@ -20,7 +20,7 @@ var lanes = 3; // lanes of attack
 var guides = [];// set of horizontal line guides for showing incoming jazz
 var score = 0; 
 var scoreElt; //element to store the Score div
-var lives = 99;
+var lives = 333;
 var livesElt;
 var lane0=[];//its a hackathaon
 var lane1=[];//its caching to go fast
@@ -31,13 +31,12 @@ var stage;
 var background;
 var parallax;
 var MENU = true;
-var controlsText = "Hold your arm out horizontally.<br><br>"
-    + "Flick your wrist up or down to change lanes.<br><br>"
-    + "Double tap to throw a fireball.<br>"
-    + "Spread your fingers to launch ball lightning.<br>"
-    + "Make a fist to ... do something<br><br>"
-    + "Each enemy is vulnerable only to a specific attack.<br><br>"
-    + "Don't let enemies get passed you!"
+var controlsText = 
+    "Flick your wrist up or down to change lanes.<br><br>"
+    + "Double tap to throw a fireball.<img src ='res/fireball-particle.png'></img><br>"
+    + "Spread your fingers to launch ball lightning.<img src='res/lightning-particle.png'></img><br>"
+    + "Make a fist to throw rocks<img src='res/rock-particle.png'></img><br><br>"
+    + "Each enemy is color coded by the attack that kills them!.<br>";
 var enemySheets = {
     rock : new createjs.SpriteSheet({
         images: ['./res/rock.png'],
@@ -126,7 +125,7 @@ function changeScore(delta) {
 
 function initLives () {
     livesElt=$("#lives");
-    lives = 99;
+    lives = 3;
     livesElt.html(lives);
 }
 
@@ -436,6 +435,9 @@ function onPose(gesture) {
         case "move_right":
             if (player.lane < 2) player.lane++;
             player.setY();
+            break;
+        case "hard_tap":
+            console.log("hard tap");
             break;
         default:
             player.shoot.bind(player)();

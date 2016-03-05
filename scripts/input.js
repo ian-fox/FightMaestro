@@ -28,6 +28,9 @@ Myo.on('connected', function(){
   Myo.setLockingPolicy("none");
 });
 
+Myo.on('hard_tap',function (){
+    onPose("hard_tap");
+});
 Myo.on('pose', function(pose){
   switch(pose) {
     case "fist":
