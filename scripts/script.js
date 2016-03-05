@@ -1,6 +1,7 @@
 var enemies = [];
 var startTime = 0;
 var FONT = "share-regular,'Arial Narrow',sans-serif";
+var theme; //stores themesong
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
@@ -546,6 +547,19 @@ function initMenu() {
     $("#backButton").click(hideControls);
     $("#backButton").hide();
     blink();
+
+    //LOAD SOUND
+    createjs.Sound.alternateExtension = ["mp3"];
+    createjs.Sound.registerSound({id:"theme", src:"res/theme.mp3"});
+    createjs.Sound.on("fileload", handleFileLoad);
+    function handleFileLoad (event) {
+        console.log(event);
+        if (!theme){
+            theme = createjs.Sound.play("theme");
+            theme.volume = 0.1;
+            theme.on("complete", this.handleComplete, this);
+        }
+    }
 }
 
 function showControls() {
