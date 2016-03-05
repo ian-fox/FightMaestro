@@ -229,6 +229,8 @@ function Projectile (lane, type){
     this.lane = lane;
     this.type = type;
 
+
+    this.creationTime = new Date().getTime();
     this.type= type;
     this.lane = lane;
     this.lastUpdate = new Date().getTime();
@@ -267,7 +269,9 @@ function Projectile (lane, type){
     stage.addChild(this.proj);
 
     this.remove = function () {
-        stage.removeChild(this.proj);
+        setTimeout(function () {
+            stage.removeChild(this.proj);
+        }.bind(this), Math.max(0, this.creationTime + 200 - new Date().getTime()));
     }
     this.update= function () {
         this.proj.x += CANVAS_WIDTH * (new Date().getTime() - this.lastUpdate)/PROJECTILE_SCREEN_CROSS_TIME;
