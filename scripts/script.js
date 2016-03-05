@@ -114,15 +114,15 @@ function Character() {
                 height: 100
             },
             animations: {
-                idle: {
-                    frames: [0, 1, 2, 3],
+                walk: {
+                    frames: [0, 1, 2, 3, 14],
                     speed: 0.05,
-                    next: "idle"
+                    next: "walk"
                 },
                 shoot: {
                     frames: [4, 5, 6, 8],
                     speed: 0.05,
-                    next: "idle"
+                    next: "walk"
                 },
                 die: {
                     frames: [9, 10, 11, 12, 13],
@@ -138,7 +138,7 @@ function Character() {
     }
     // Add Shape instance to stage display list.
     stage.addChild(this.sprite);
-    this.sprite.gotoAndPlay("idle");
+    this.sprite.gotoAndPlay("walk");
     // Update stage will render next frame
     this.draw = function() {
         stage.update();
