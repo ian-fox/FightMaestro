@@ -127,7 +127,7 @@ function changeScore(delta) {
 
 function initLives () {
     livesElt=$("#lives");
-    lives = 1;
+    lives = 10;
     livesElt.html(lives);
 }
 
