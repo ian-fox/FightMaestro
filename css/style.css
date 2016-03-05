@@ -21,3 +21,37 @@ body {
   bottom: 5px;
   right: 5px;
 }
+#chooseText {
+  position: absolute;
+  top: 20%;
+  left: calc(50% - 400px);
+  text-align: center;
+  width: 800px;
+  height: 100px;
+  color: #fff;
+  font-size:64pt;
+  font: share-regular, 'Arial Narrow', sans-serif;
+  text-decoration: blink;
+}
+.transparent {
+  display: none;
+}
+.menuButton {
+  border-radius: 20px;
+  background-color: #aaa;
+  width: 300px;
+  height: 100px;
+  color: #fff;
+  font-size: 32pt;
+  padding-top: 1em;
+}
+#singleplayer {
+  position: absolute;
+  top: 40%;
+  right: 55%;
+}
+#multiplayer {
+  position: absolute;
+  top: 40%;
+  left: 55%;
+}

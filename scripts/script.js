@@ -27,6 +27,7 @@ var projectiles = []; //array of players on the screen
 var stage;
 var background;
 var parallax;
+var MENU = true;
 var enemySheets = {
     rock : new createjs.SpriteSheet({
         images: ['./res/rock.png'],
@@ -114,9 +115,9 @@ function changeScore(delta) {
 }
 
 function initLives () {
-    livesElt=document.getElementById("lives");
+    livesElt=$("#lives");
     lives = 99;
-    livesElt.innerHTML = lives;
+    livesElt.html(lives);
 }
 
 function changeLives(delta) {
@@ -441,7 +442,7 @@ function gameOver() {
     createjs.Ticker.removeAllEventListeners();
     var elt = document.createElement("div");
     var span = document.createElement("span");
-    var text = document.createTextNode("Game Over Man");
+    var text = document.createTextNode("Game Over");
     span.id="gameOverText";
     span.appendChild(text);
     elt.appendChild(span);
@@ -452,7 +453,7 @@ function gameOver() {
     setTimeout(function () {
         document.body.removeChild(elt);
     }.bind(this), 2000);
-    setTimeout(initGame, 2000);
+    setTimeout(initMenu, 2000);
 }
 
 function orderEntities() {
@@ -485,6 +486,7 @@ function drawEntities() {
 
 function initGame() {
     // BEGIN GAME STATE INITIALIZATION
+    createjs.Ticker.removeAllEventListeners();
     startTime = new Date().getTime();
     initScore();
     initLives();
@@ -493,6 +495,46 @@ function initGame() {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", drawEntities);
 }
+
+function initMenu() {
+    menu = true;
+    createjs.Ticker.setFPS(60);
+    initPlayer();
+    createjs.Ticker.addEventListener("tick", function() {
+        background.draw.bind(background)();
+        parallax.draw.bind(parallax)();
+        stage.update();
+    });
+    var chooseText = document.createElement("div");
+    chooseText.id="chooseText";
+    chooseText.innerHTML="Select a mode.";
+    document.body.appendChild(chooseText);
+
+    var singleplayer = document.createElement("div");
+    singleplayer.id="singleplayer";
+    document.body.appendChild(singleplayer);
+    $("#singleplayer").html("Singleplayer").addClass("menuButton");
+    $("#singleplayer").click(startGame);
+    var multiplayer = document.createElement("div");
+    multiplayer.id="multiplayer";
+    document.body.appendChild(multiplayer);
+    $("#multiplayer").html("Multiplayer").addClass("menuButton");
+    //$("#multiplayer").click(startGame(true));
+    blink();
+}
+
+function startGame(multiplayer) {
+    menu = false;
+    $(".menuButton").remove();
+    $("#chooseText").remove();
+    initGame();
+}
+
+function blink () {
+    $("#chooseText").toggleClass("transparent");
+    if (menu) setTimeout(blink, 1000);
+}
+
 
 function init () {
     var canvas = document.getElementById("canvas");
@@ -512,8 +554,7 @@ function init () {
     resizeCanvas();
 
     window.addEventListener('resize', resizeCanvas, false);
-
-    initGame();
+    initMenu();
 }
 
 window.onload = init;
