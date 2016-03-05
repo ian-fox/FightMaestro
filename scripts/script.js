@@ -9,8 +9,9 @@ var CAR_IMAGE=0;
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
 var badguys= ["fist", "lighting", "fireball"];
-var lanes = 3;
+var lanes = 2;
 var guides = [];// set of horizontal line guides for showing incoming jazz
+
 
 function Beat(hitTime, gesture, lane) {
     //Create a Shape DisplayObject.
@@ -43,6 +44,15 @@ function drawGuides(){
         stage.addChild(rect);
         guides.push(rect);
     }
+}
+
+function getFirstEnemyByLane(lane) {
+    for (int i = 0; i < beatMap.length; i ++) {
+        if (beatMap[i].lane == lane){
+            return {enemy:beatMap[i], index:i};
+        }
+    }
+    return null;
 }
 
 
