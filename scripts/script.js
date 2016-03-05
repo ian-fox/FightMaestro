@@ -11,6 +11,7 @@ var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000;
 var badguys= ["fist", "lighting", "fireball"];
 var lanes = 3;
 var guides = [];// set of horizontal line guides for showing incoming jazz
+var player;
 
 
 function Beat(hitTime, type, lane) {
@@ -58,16 +59,20 @@ function Beat(hitTime, type, lane) {
 function Character() {
     this.lane = 1;
     this.health = 100;
-    this.x = 100;
-    this.y = 300;
+    this.sprite = new createjs.Bitmap("res/char_rest.png");
+    this.sprite.x = 100;
+    this.sprite.y = 300;
     this.setY = function() {
-        this.y = 200 + 100 * this.lane;
+        this.sprite.y = 200 + 100 * this.lane;
     }
-    this.sprite = new createjs.Bitmap("res/rest.png");
-    //Add Shape instance to stage display list.
-    stage.addChild(this);
-    //Update stage will render next frame
+    // Add Shape instance to stage display list.
+    stage.addChild(this.sprite);
+    // Update stage will render next frame
+    this.draw = function() {
+        stage.update();
+    }
 }
+
 
 function drawGuides(){
     if (guides.length > 0){
@@ -127,14 +132,28 @@ function init () {
     //Create a stage by getting a reference to the canvas
     startTime = new Date().getTime();
     generateMap();
+    player = new Character();
     //drawBackground();
     drawGuides();
+
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", drawBeats);
+    createjs.Ticker.addEventListener("tick", player.draw);
 }
 
 function onPose(gesture) {
-    console.log(gesture);
+    switch(gesture) {
+        case "move_left":
+            if (player.lane > 0) player.lane--;
+            player.setY();
+            break;
+        case "move_right":
+            if (player.lane < 2) player.lane++;
+            player.setY();
+            break;
+        default:
+            console.log(gesture);
+    }
 }
 
 window.onload = init;
