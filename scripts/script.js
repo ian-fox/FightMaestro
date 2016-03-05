@@ -7,11 +7,25 @@ var MS_PER_BEAT = 1000;
 var CANVAS_HEIGHT= 900; // width of canvas
 var CAR_IMAGE=0;
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
+var V_OFFSET =100;
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
 var badguys= ["fist", "lighting", "fireball"];
 var lanes = 3;
 var guides = [];// set of horizontal line guides for showing incoming jazz
+var score = 0;
+var scoreElt;
 
+function initScore () {
+    score = 0;
+    scoreElt=document.getElementById("score");
+    scoreElt.innerHTML = score;
+}
+
+function changeScore(delta) {
+    score += delta;
+    scoreElt.innerHTML = score;
+
+}
 
 function Beat(hitTime, type, lane) {
     //Create a Shape DisplayObject.
@@ -35,23 +49,31 @@ function Beat(hitTime, type, lane) {
     this.type= type;
     this.dead = false;
     this.lane = lane;
-    this.enemy.y = 200 + 100*lane;
+    this.enemy.y = V_OFFSET+ 100*lane;
     this.enemy.x = CANVAS_WIDTH + 2000;//offscreen hack
     this.remove = function () {
         stage.removeChild(this.enemy);
     }
     this.setX = function () {
-        if (this.enemy.x > -500){
-            this.enemy.x = 200+ startTime + this.hitTime - new Date().getTime();
+        if (this.enemy.x > -200){
+            this.enemy.x =startTime + this.hitTime - new Date().getTime();
         } else {
-            this.remove();
+            this.kill(-1);
         }
     }
     this.setX();
     // call this if this beat is killed
-    this.kill = function () {
+    this.kill = function (scoreChange) {
         this.dead=true;
-        setTimeout(this.remove, 200);
+        changeScore(scoreChange);
+        setTimeout(this.remove.bind(this), 200);
+        var ref = getFirstEnemyByLane(this.lane).enemy;
+        beatMap=beatMap.filter(function (entry) {
+            if (ref === entry)
+                return false;
+            return true;
+        });
+
     }
 }
 
@@ -59,7 +81,7 @@ function drawGuides(){
     if (guides.length > 0){
         guides.length =0;
     }
-    for (var i = 2; i<= 2+badguys.length; i+=badguys.length ){ 
+    for (var i = 1; i<= 1+lanes; i++){ 
         var rect = new createjs.Shape();
         rect.graphics.beginFill("black").drawRect(0,i*LINE_HEIGHT, CANVAS_WIDTH, 5);
         stage.addChild(rect);
@@ -101,7 +123,7 @@ function init () {
     stage = new createjs.Stage("canvas");
     function resizeCanvas (){
         canvas.width=window.innerWidth-20;
-        canvas.height=window.innerHeight-20;
+        canvas.height=window.innerHeight-150;
         CANVAS_WIDTH=canvas.width;
         CANVAS_HEIGHT=canvas.height;
         drawGuides();
@@ -115,6 +137,7 @@ function init () {
     generateMap();
     //drawBackground();
     drawGuides();
+    initScore();
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", drawBeats);
 }
