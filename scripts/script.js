@@ -7,7 +7,7 @@ var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
 var ENEMY_SCREEN_CROSS_TIME = 6000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var ANIMATION_SPEED = {
-    player: 0.03,
+    player: 0.02,
     fireball: 0.025,
     rock: 0.01,
     lightning: 0.02
@@ -40,6 +40,11 @@ var enemySheets = {
                 speed: ANIMATION_SPEED.rock,
                 next: "walk"
             },
+            idle: {
+                frames: [4, 5, 6, 7],
+                speed: ANIMATION_SPEED.rock,
+                next: "idle"
+            },
             die: {
                 frames: [12, 13, 14, 15],
                 speed: ANIMATION_SPEED.rock
@@ -58,6 +63,11 @@ var enemySheets = {
                 speed: ANIMATION_SPEED.fireball,
                 next: "walk"
             },
+            idle: {
+                frames: [5, 6, 7, 8],
+                speed: ANIMATION_SPEED.fireball,
+                next: "idle"
+            },
             die: {
                 frames: [11, 12, 13, 14, 15],
                 speed: ANIMATION_SPEED.fireball
@@ -75,6 +85,11 @@ var enemySheets = {
                 frames: [0, 1, 2, 3, 4],
                 speed: ANIMATION_SPEED.lightning,
                 next: "walk"
+            },
+            idle: {
+                frames: [5, 6, 7],
+                speed: ANIMATION_SPEED.lightning,
+                next: "idle"
             },
             die: {
                 frames: [12, 13, 14, 15],
@@ -273,7 +288,7 @@ function createProjectile(type) {
 function Enemy(hitTime, type, lane) {
     this.enemy = new createjs.Sprite(enemySheets[types[type]]);
     stage.addChild(this.enemy);
-    this.enemy.gotoAndPlay("walk");
+    this.enemy.gotoAndPlay("idle");
     //Update stage will render next frame
     this.hitTime= hitTime;
     this.type= type;
