@@ -60,7 +60,14 @@ var enemySheets = {
             },
             die: {
                 frames: [12, 13, 14, 15],
-                speed: ANIMATION_SPEED.rock
+                speed: ANIMATION_SPEED.rock,
+                next: "dead"
+            },
+            dead: [15],
+            block: {
+                frames: [8, 9, 9, 9],
+                speed: ANIMATION_SPEED.rock * 2,
+                next: "idle"
             }
         }
     }),
@@ -83,7 +90,14 @@ var enemySheets = {
             },
             die: {
                 frames: [11, 12, 13, 14, 15],
-                speed: ANIMATION_SPEED.fireball
+                speed: ANIMATION_SPEED.fireball,
+                next: dead
+            },
+            dead: [15],
+            block: {
+                frames: [9, 10, 10, 10],
+                speed: ANIMATION_SPEED.fire * 2,
+                next: "idle"
             }
         }
     }),
@@ -106,7 +120,14 @@ var enemySheets = {
             },
             die: {
                 frames: [12, 13, 14, 15],
-                speed: ANIMATION_SPEED.lightning
+                speed: ANIMATION_SPEED.lightning,
+                next: "dead"
+            },
+            dead: [15],
+            block: {
+                frames: [8, 9, 9, 9],
+                speed: ANIMATION_SPEED.lightning * 2,
+                next: "idle"
             }
         }
     })
@@ -319,7 +340,7 @@ function Enemy(hitTime, type, lane) {
         this.dead=true;
         this.enemy.gotoAndPlay("die");
         changeScore(scoreChange);
-        setTimeout(this.remove.bind(this), 400);
+        setTimeout(this.remove.bind(this), 1000);
     }
 
     this.instakill = function() {
