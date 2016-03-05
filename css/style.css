@@ -3,7 +3,12 @@ body {
 }
 #gameOver{
     position: fixed;
-    top: 40%;
-    left: 40%;
+    background-color: #aaaaaa;
+    top: 20%;
+    left: 20%;
     width: 300px;
+}
+#gameOverText{
+    font-size:128pt;
+    opacity:1;
 }
