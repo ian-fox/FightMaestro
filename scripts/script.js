@@ -4,10 +4,10 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 4000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 9000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var V_OFFSET =100;
-var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
+var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
 var types= ["rock", "lightning", "fireball"];
 var oldestEnemy = 0; // keeps track of the oldest enemy in enemies
 var lanes = 3; // lanes of attack
@@ -227,16 +227,23 @@ function Projectile (lane, type){
     }
     this.checkCollision=function() {
         var first = getFirstEnemyByLane(lane);
-        //TODO WRITE COLLISION DETECTION
-        //var intersection = ndgmr.checkPixelCollision(this.proj, first.enemy);
+        var intersection = ndgmr.checkPixelCollision(this.proj, first.enemy.enemy);
+        if (intersection) {
+            if (first.enemy.type == this.type){
+                first.enemy.kill(1);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
 function drawProjectiles() {
     projectiles = projectiles.filter(function (entry) {
         entry.update();
-        entry.checkCollision();
-        if (entry.proj.x>CANVAS_WIDTH+300){
+        var collision = entry.checkCollision();
+        if (collision || entry.proj.x>CANVAS_WIDTH+300){
             entry.remove();
             return false;
         }
@@ -295,7 +302,7 @@ function getFirstEnemyByLane(lane) {
 function generateEnemy() {
     var lane= Math.floor(Math.random() * lanes);
     var type= Math.floor(Math.random() * types.length);
-    var time = Math.max(1000, Math.floor(Math.random() * 2000));
+    var time = Math.max(2000, Math.floor(Math.random() * 3000));
     if (oldestEnemy == 0) {
         oldestEnemy = START_DELAY;
     } else {
