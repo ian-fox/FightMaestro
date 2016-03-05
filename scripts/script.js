@@ -47,7 +47,7 @@ function drawGuides(){
 }
 
 function getFirstEnemyByLane(lane) {
-    for (int i = 0; i < beatMap.length; i ++) {
+    for (var i = 0; i < beatMap.length; i ++) {
         if (beatMap[i].lane == lane){
             return {enemy:beatMap[i], index:i};
         }
@@ -98,7 +98,7 @@ function init () {
     createjs.Ticker.addEventListener("tick", drawBeats);
 }
 
-function onPos(gesture) {
+function onPose(gesture) {
     console.log(gesture);
 }
 
