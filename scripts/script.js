@@ -445,12 +445,13 @@ function onPose(gesture) {
 
 function gameOver() {
     createjs.Ticker.removeAllEventListeners();
-    var elt = document.createElement("DIV");
+    var elt = document.createElement("div");
+    var span = document.createElement("span");
     var text = document.createTextNode("Game Over Man");
-    text.id="gameOverText";
-    elt.appendChild(text);
+    span.id="gameOverText";
+    span.appendChild(text);
+    elt.appendChild(span);
     elt.id="gameOver";
-    elt.style="font-size:64pt";
     document.body.appendChild(elt);
 
     createjs.Ticker.removeAllEventListeners();

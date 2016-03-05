@@ -1,14 +1,22 @@
 body {
-    background-color: #36454F;
+    background-color: #000;
+    color: #fff;
 }
-#gameOver{
+#gameOver {
     position: fixed;
-    background-color: #aaaaaa;
+    background-color: #000;
     top: 20%;
-    left: 20%;
+    left: calc(50% - 150px);
     width: 300px;
+    border-radius: 20px;
 }
-#gameOverText{
-    font-size:128pt;
+#gameOverText {
+    font-size:64pt;
     opacity:1;
+}
+#credit {
+  color: #555;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
