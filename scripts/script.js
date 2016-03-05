@@ -10,6 +10,7 @@ var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
 var V_OFFSET =100;
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
 var badguys= ["fist", "lighting", "fireball"];
+var oldestEnemy = 0;
 var lanes = 3;
 var guides = [];// set of horizontal line guides for showing incoming jazz
 var score = 0;
@@ -74,7 +75,6 @@ function Beat(hitTime, type, lane) {
                 return false;
             return true;
         });
-
     }
 }
 
@@ -83,7 +83,7 @@ function Character() {
     this.health = 100;
     this.sprite = new createjs.Bitmap("res/char_rest.png");
     this.sprite.x = 100;
-    this.sprite.y = 300;
+    this.sprite.y = 200;
     this.setY = function() {
         this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
     }
@@ -100,7 +100,7 @@ function drawGuides(){
     if (guides.length > 0){
         guides.length =0;
     }
-    for (var i = 1; i<= 1+lanes; i++){ 
+    for (var i = 1; i<= 1+lanes; i+=3){
         var rect = new createjs.Shape();
         rect.graphics.beginFill("black").drawRect(0,i*LINE_HEIGHT, CANVAS_WIDTH, 5);
         stage.addChild(rect);
@@ -117,20 +117,32 @@ function getFirstEnemyByLane(lane) {
     return null;
 }
 
+function generateEnemy() {
+    var lane= Math.floor(Math.random() * lanes);
+    var type= Math.floor(Math.random() * badguys.length);
+    var time = Math.max(1000, Math.floor(Math.random() * 2000));
+    if (oldestEnemy == 0) {
+        oldestEnemy = START_DELAY;
+    } else {
+        oldestEnemy += time;
+    }
+    var beat = new Beat (oldestEnemy, badguys[type], lane);
+    return beat;
+}
 
 function generateMap () {
-    if (!beatMap.length) {
-        for (var i =0; i < MAP_LENGTH; i+=MS_PER_BEAT* Math.max(Math.random()*3,1)){
-            var lane= Math.floor(Math.random() * lanes);
-            var type= Math.floor(Math.random() * lanes);
-            var beat = new Beat (i + START_DELAY, badguys[type], lane);
-            beatMap.push(beat);
-        }
+    for (var i =0; i < 20; i++){
+        beatMap.push(generateEnemy());
     }
 }
 
 function drawBeats () {
+    if (beatMap.length < 20){
+        beatMap.push(generateEnemy());
+    }
     beatMap.forEach(function (entry) {
+        //console.log(entry.hitTime - new Date().getTime());
+        //console.log(entry);
         entry.setX();
     });
     stage.update();
@@ -151,16 +163,15 @@ function init () {
 
     window.addEventListener('resize', resizeCanvas, false);
 
-    //Create a stage by getting a reference to the canvas
+    // BEGIN GAME STATE INITIALIZATION
     startTime = new Date().getTime();
-    generateMap();
     player = new Character();
-    //drawBackground();
-    drawGuides();
     initScore();
+    generateMap();
+    drawGuides();
     createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", drawBeats);
     createjs.Ticker.addEventListener("tick", player.draw);
+    createjs.Ticker.addEventListener("tick", drawBeats);
 }
 
 function onPose(gesture) {
