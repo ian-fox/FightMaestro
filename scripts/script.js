@@ -4,8 +4,14 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 1000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 6000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
+var ANIMATION_SPEED = {
+    player: 0.03,
+    fireball: 0.025,
+    rock: 0.01,
+    lightning: 0.02
+};
 var V_OFFSET =0;
 var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
 var types= ["rock", "lightning", "fireball"];
@@ -31,12 +37,12 @@ var enemySheets = {
         animations: {
             walk: {
                 frames: [0, 1, 2, 3],
-                speed: 0.05,
+                speed: ANIMATION_SPEED.rock,
                 next: "walk"
             },
             die: {
                 frames: [12, 13, 14, 15],
-                speed: 0.05
+                speed: ANIMATION_SPEED.rock
             }
         }
     }),
@@ -49,12 +55,12 @@ var enemySheets = {
         animations: {
             walk: {
                 frames: [0, 1, 2, 3, 4],
-                speed: 0.05,
+                speed: ANIMATION_SPEED.fireball,
                 next: "walk"
             },
             die: {
                 frames: [11, 12, 13, 14, 15],
-                speed: 0.05
+                speed: ANIMATION_SPEED.fireball
             }
         }
     }),
@@ -67,12 +73,12 @@ var enemySheets = {
         animations: {
             walk: {
                 frames: [0, 1, 2, 3, 4],
-                speed: 0.05,
+                speed: ANIMATION_SPEED.lightning,
                 next: "walk"
             },
             die: {
                 frames: [12, 13, 14, 15],
-                speed: 0.05
+                speed: ANIMATION_SPEED.lightning
             }
         }
     })
@@ -119,17 +125,17 @@ function Character() {
             animations: {
                 walk: {
                     frames: [0, 1, 2, 3, 14],
-                    speed: 0.05,
+                    speed: ANIMATION_SPEED.player,
                     next: "walk"
                 },
                 shoot: {
                     frames: [4, 5, 6, 8],
-                    speed: 0.05,
+                    speed: ANIMATION_SPEED.player,
                     next: "walk"
                 },
                 die: {
                     frames: [9, 10, 11, 12, 13],
-                    speed: 0.05
+                    speed: ANIMATION_SPEED.player
                 }
             }
         });
