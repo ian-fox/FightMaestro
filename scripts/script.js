@@ -13,25 +13,46 @@ var lanes = 3;
 var guides = [];// set of horizontal line guides for showing incoming jazz
 
 
-function Beat(hitTime, gesture, lane) {
+function Beat(hitTime, type, lane) {
     //Create a Shape DisplayObject.
-    this.enemy= new createjs.Bitmap("res/car.png");
-    this.enemy.scaleY=0.3;
-    this.enemy.scaleX=0.3;
+    var image="res/";
+    switch (badguys.indexOf(type)){
+        case 0:
+            image += "fist.png";
+            break;
+        case 1:
+            image += "lightning.png";
+            break;
+        case 2:
+            image += "fireball.png";
+            break;
+    }
+    this.enemy= new createjs.Bitmap(image);
     //Add Shape instance to stage display list.
     stage.addChild(this.enemy);
     //Update stage will render next frame
     this.hitTime= hitTime;
-    this.gesture = gesture;
+    this.type= type;
+    this.dead = false;
     this.lane = lane;
     this.enemy.y = 200 + 100*lane;
     this.enemy.x = CANVAS_WIDTH + 2000;//offscreen hack
+    this.remove = function () {
+        stage.removeChild(this.enemy);
+    }
     this.setX = function () {
         if (this.enemy.x > -500){
             this.enemy.x = 200+ startTime + this.hitTime - new Date().getTime();
+        } else {
+            this.remove();
         }
     }
     this.setX();
+    // call this if this beat is killed
+    this.kill = function () {
+        this.dead=true;
+        setTimeout(this.remove, 200);
+    }
 }
 
 function drawGuides(){
