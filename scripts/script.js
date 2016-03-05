@@ -127,7 +127,7 @@ function changeScore(delta) {
 
 function initLives () {
     livesElt=$("#lives");
-    lives = 10;
+    lives = 1;
     livesElt.html(lives);
 }
 
@@ -320,6 +320,11 @@ function Enemy(hitTime, type, lane) {
         changeScore(scoreChange);
         setTimeout(this.remove.bind(this), 400);
     }
+
+    this.instakill = function() {
+        this.dead = true;
+        this.remove.bind(this)();
+    }
 }
 function getLane(lane) {
     if (lane == 0)
@@ -440,7 +445,6 @@ function onPose(gesture) {
             player.setY();
             break;
         case "hard_tap":
-            console.log("hard tap");
             break;
         default:
             player.shoot.bind(player)();
@@ -465,8 +469,9 @@ function gameOver() {
     elt.id="gameOver";
     document.body.appendChild(elt);
     for (var i = 0; i < enemies.length; i++) {
-        stage.removeChild(enemies[i]);
+        enemies[i].instakill.bind(enemies[i])();
     }
+    stage.update();
 
 
     createjs.Ticker.removeAllEventListeners();
