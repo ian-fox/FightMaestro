@@ -49,7 +49,30 @@ function drawGuides(){
 function Character() {
     this.lane = 1;
     this.health = 100;
-    this.sprite = new createjs.Bitmap("res/char_rest.png");
+    this.animation = "idle";
+    this.frame = 0;
+    this.sheet = new createjs.SpriteSheet({
+            images: ['./res/char.png'],
+            frames: {
+                width: 100, 
+                height: 100
+            },
+            animations: {
+                idle: {
+                    frames: [0, 1, 2, 3],
+                    speed: 0.05
+                },
+                shoot: {
+                    frames: [4, 5, 6, 8],
+                    speed: 0.125
+                },
+                die: {
+                    frames: [9, 10, 11, 12, 13],
+                    speed: 0.125
+                }
+            }
+        });
+    this.sprite = new createjs.Sprite(this.sheet);
     this.sprite.x = 100;
     this.sprite.y = 200;
     this.setY = function() {
@@ -57,8 +80,17 @@ function Character() {
     }
     // Add Shape instance to stage display list.
     stage.addChild(this.sprite);
+    this.sprite.gotoAndPlay("idle");
     // Update stage will render next frame
     this.draw = function() {
+        this.frame++;
+        console.log(this.frame);
+        console.log(this.animation);
+        if ((this.animation === "idle" || this.animation === "shoot") && this.frame > 119) {
+            this.frame = 0;
+            this.animation = "idle";
+            this.sprite.gotoAndPlay("idle");
+        }
         stage.update();
     }
 }
@@ -239,7 +271,7 @@ function init () {
     generateMap();
     drawGuides();
     createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", player.draw);
+    createjs.Ticker.addEventListener("tick", player.draw.bind(player));
     createjs.Ticker.addEventListener("tick", drawEnemies);
 }
 
