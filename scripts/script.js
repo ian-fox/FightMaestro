@@ -55,6 +55,20 @@ function Beat(hitTime, type, lane) {
     }
 }
 
+function Character() {
+    this.lane = 1;
+    this.health = 100;
+    this.x = 100;
+    this.y = 300;
+    this.setY = function() {
+        this.y = 200 + 100 * this.lane;
+    }
+    this.sprite = new createjs.Bitmap("res/rest.png");
+    //Add Shape instance to stage display list.
+    stage.addChild(this);
+    //Update stage will render next frame
+}
+
 function drawGuides(){
     if (guides.length > 0){
         guides.length =0;
