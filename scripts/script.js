@@ -461,7 +461,7 @@ function orderEntities() {
         entity = stage.children[i];
         if (entity.type === "player") {
             playerIndex = stage.getNumChildren() - 1;
-            stage.setChildIndex(playerIndex);
+            stage.setChildIndex(entity, playerIndex);
         }
     }
     for (var i = 0; i < stage.children.length; i++) {
