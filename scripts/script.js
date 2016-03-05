@@ -4,7 +4,7 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 6000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 1000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var ANIMATION_SPEED = {
     player: 0.02,
@@ -446,7 +446,9 @@ function onPose(gesture) {
 function gameOver() {
     createjs.Ticker.removeAllEventListeners();
     var elt = document.createElement("DIV");
-    elt.appendChild(document.createTextNode("Game Over Man"));
+    var text = document.createTextNode("Game Over Man");
+    text.id="gameOverText";
+    elt.appendChild(text);
     elt.id="gameOver";
     elt.style="font-size:64pt";
     document.body.appendChild(elt);
