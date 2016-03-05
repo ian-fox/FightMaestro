@@ -610,6 +610,7 @@ function init () {
         CANVAS_HEIGHT=0.25*canvas.height;
         parallax.resize.bind(parallax)();
         background.resize.bind(background)();
+        initPlayer();
     }
     resizeCanvas();
 
