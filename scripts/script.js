@@ -4,6 +4,8 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
+var ENEMY_SCREEN_CROSS_TIME = 3000; // time taken by an enemy crossing the scren
+var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var V_OFFSET =100;
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
 var types= ["rock", "lightning", "fireball"];
@@ -143,7 +145,7 @@ function Projectile (lane, type){
         stage.removeChild(this.proj);
     }
     this.update= function () {
-        this.proj.x += new Date().getTime() - this.lastUpdate;
+        this.proj.x += CANVAS_WIDTH * (new Date().getTime() - this.lastUpdate)/PROJECTILE_SCREEN_CROSS_TIME;
         this.lastUpdate = new Date().getTime();
     }
     this.checkCollision=function() {
@@ -202,8 +204,8 @@ function Enemy(hitTime, type, lane) {
         stage.removeChild(this.enemy);
     }
     this.setX = function () {
-        if (this.enemy.x > -200){
-            this.enemy.x =startTime + this.hitTime - new Date().getTime();
+        if (this.enemy.x >-50){
+            this.enemy.x =CANVAS_WIDTH *  (startTime + this.hitTime - new Date().getTime())/ENEMY_SCREEN_CROSS_TIME;
         } else {
             this.kill(-1);
         }
