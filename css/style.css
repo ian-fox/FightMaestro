@@ -9,6 +9,7 @@ body {
     left: calc(50% - 150px);
     width: 300px;
     border-radius: 20px;
+    opacity: 0.7;
 }
 #gameOverText {
     font-size:64pt;

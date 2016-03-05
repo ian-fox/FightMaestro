@@ -145,7 +145,7 @@ function Character() {
                 },
                 shoot: {
                     frames: [4, 5, 6, 8],
-                    speed: ANIMATION_SPEED.player,
+                    speed: ANIMATION_SPEED.player * 2,
                     next: "walk"
                 },
                 die: {
