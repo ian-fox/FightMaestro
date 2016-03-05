@@ -658,11 +658,8 @@ function init () {
     createjs.Sound.on("fileload", handleFileLoad);
     function handleFileLoad (event) {
         if (!theme && event.id=="theme"){
-            theme = createjs.Sound.play("theme", {interrupt: createjs.Sound.INTERRUPT_ANY, loop:1});
+            theme = createjs.Sound.play("theme", {interrupt: createjs.Sound.INTERRUPT_ANY, loop:-1});
             theme.volume = 0.1;
-            theme.in("complete",function () {
-                playSound(event.id);
-            });
         } else if (event.id.match(/hit*/)){
             hitsounds.push(event.id);
         } else{
