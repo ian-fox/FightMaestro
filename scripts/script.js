@@ -6,7 +6,7 @@ var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
 var V_OFFSET =100;
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
-var types= ["rock", "lighting", "fireball"];
+var types= ["rock", "lightning", "fireball"];
 var oldestEnemy = 0; // keeps track of the oldest enemy in enemies
 var lanes = 3; // lanes of attack
 var guides = [];// set of horizontal line guides for showing incoming jazz
@@ -119,21 +119,52 @@ function Projectile (lane, type){
     */
     this.type= type;
     this.lane = lane;
+    this.lastUpdate = new Date().getTime();
 
     this.proj = new createjs.Shape();
-    this.proj.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-    this.proj.x = player.x+100;
-    this.proj.y = player.y+50;
+    var color;
+    if (type = types[0])
+        color = "brown";
+    if (type = types[1])
+        color = "DeepSkyBlue";
+    if (type = types[2])
+        color = "Red";
+
+    this.proj.graphics.beginFill(color).drawCircle(0, 0, 50);
+    this.proj.x = player.sprite.x+100;
+    this.proj.y = player.sprite.y+50;
     stage.addChild(this.proj);
 
     this.remove = function () {
         stage.removeChild(this.proj);
     }
-
+    this.update= function () {
+        this.proj.x += new Date().getTime() - this.lastUpdate;
+        this.lastUpdate = new Date().getTime();
+    }
+    this.checkCollision=function() {
+        var first = getFirstEnemyByLane(lane);
+        //TODO WRITE COLLISION DETECTION
+        //var intersection = ndgmr.checkPixelCollision(this.proj, first.enemy);
+    }
 }
 
-function handleGesture(gesture) {
-    //var proj = new Projectile(player.lane, bad
+function drawProjectiles() {
+    projectiles = projectiles.filter(function (entry) {
+        entry.update();
+        entry.checkCollision();
+        if (entry.proj.x>CANVAS_WIDTH+300){
+            entry.remove();
+            return false;
+        }
+        return true;
+    });
+    stage.update();
+}
+
+function createProjectile(gesture) {
+    var proj = new Projectile(player.lane, gesture);
+    projectiles.push(proj);
 }
 
 /////////////////////////////////////////////////
@@ -144,7 +175,7 @@ function Enemy(hitTime, type, lane) {
     var image="res/";
     switch (types.indexOf(type)){
         case 0:
-            image += "fist.png";
+            image += "rock.png";
             break;
         case 1:
             image += "lightning.png";
@@ -180,11 +211,7 @@ function Enemy(hitTime, type, lane) {
         changeScore(scoreChange);
         setTimeout(this.remove.bind(this), 200);
         var ref = getFirstEnemyByLane(this.lane).enemy;
-        enemies=enemies.filter(function (entry) {
-            if (ref === entry)
-                return false;
-            return true;
-        });
+
     }
 }
 function getFirstEnemyByLane(lane) {
@@ -219,10 +246,11 @@ function drawEnemies () {
     if (enemies.length < 20){
         enemies.push(generateEnemy());
     }
-    enemies.forEach(function (entry) {
-        //console.log(entry.hitTime - new Date().getTime());
-        //console.log(entry);
+    enemies = enemies.filter(function (entry) {
         entry.setX();
+        if (entry.dead)
+            return false;
+        return true;
     });
     stage.update();
 }
@@ -243,7 +271,7 @@ function onPose(gesture) {
             player.setY();
             break;
         default:
-            handleGesture(gesture);
+            createProjectile(gesture);
     }
 }
 
@@ -264,6 +292,9 @@ function init () {
 
     window.addEventListener('resize', resizeCanvas, false);
 
+    //INIT COLLISION DETECTOR
+    ndgmr.col
+
     // BEGIN GAME STATE INITIALIZATION
     startTime = new Date().getTime();
     player = new Character();
@@ -273,6 +304,7 @@ function init () {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", player.draw.bind(player));
     createjs.Ticker.addEventListener("tick", drawEnemies);
+    createjs.Ticker.addEventListener("tick", drawProjectiles);
 }
 
 window.onload = init;
