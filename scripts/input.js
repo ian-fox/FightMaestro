@@ -3,18 +3,48 @@ window.onkeydown = function(event) { // use keydown until we get myo to cooperat
 
   switch(event.code) {
     case "KeyA":
-      onPose("fist");
+      onPose("move_left");
       break;
     case "KeyS":
-      onPose("shield");
+      onPose("move_right");
       break;
     case "KeyD":
-      onPose("lightning");
+      onPose("fist");
       break;
     case "KeyF":
       onPose("fireball");
       break;
-    default:
+    case "KeyG":
+      onPose("lightning");
       break;
   }
 }
+
+// myo part
+
+Myo.connect('com.myojs.poseDetector');
+Myo.on('connected', function(){
+  console.log('connected!', this.id);
+  Myo.setLockingPolicy("none");
+});
+
+Myo.on('pose', function(pose){
+  switch(pose) {
+    case "fist":
+      onPose("fist");
+      break;
+    case "fingers_spread":
+      onPose("lightning");
+      break;
+    case "double_tap":
+      onPose("fireball");
+      break;
+    case "wave_in":
+      Myo.myos[0].arm === "right" ? onPose("move_right") : onPose("move_right");
+      break;
+    case "wave_out":
+      Myo.myos[0].arm === "right" ? onPose("move_left") : onPose("move_left");
+      break;
+  }
+})
+
