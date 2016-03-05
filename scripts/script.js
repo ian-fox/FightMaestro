@@ -106,37 +106,42 @@ function Character() {
 function Projectile (lane, type){
     this.lane = lane;
     this.type = type;
-    /* IMAGE HANDLING IAN DO THIS PART
-    var image="res/";
-    switch (types.indexOf(type)){
-        case 0:
-            image += "rock.png";
-            break;
-        case 1:
-            image += "lightning.png";
-            break;
-        case 2:
-            image += "fireball.png";
-            break;
-    }
-    this.enemy= new createjs.Bitmap(image);
-    */
+
     this.type= type;
     this.lane = lane;
     this.lastUpdate = new Date().getTime();
+    this.sheet = new createjs.SpriteSheet({
+            images: ['./res/attacks.png'],
+            frames: {
+                width: 50, 
+                height: 50
+            },
+            animations: {
+                fireball: {
+                    frames: [3, 4],
+                    speed: 0.05,
+                    next: "fireball"
+                },
+                lightning: {
+                    frames: [0, 1],
+                    speed: 0.05,
+                    next: "lightning"
+                },
+                rock: {
+                    frames: [2],
+                    speed: 0.05
+                }
+            }
+        });
+    this.proj = new createjs.Sprite(this.sheet);
+    
+    // Animation
+    this.proj.gotoAndPlay(types[this.type]);
 
-    this.proj = new createjs.Shape();
-    var color;
-    if (type ===0)
-        color = "Brown";
-    if (type ===1)
-        color = "DeepSkyBlue";
-    if (type ===2)
-        color = "Red";
-
-    this.proj.graphics.beginFill(color).drawCircle(0, 0, 50);
+    this.proj.scaleX=2;
+    this.proj.scaleY=2;
     this.proj.x = player.sprite.x+100;
-    this.proj.y = player.sprite.y+50;
+    this.proj.y = player.sprite.y;
     stage.addChild(this.proj);
 
     this.remove = function () {
