@@ -3,10 +3,10 @@ var startTime = 0;
 var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
-var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
+var LINE_HEIGHT = 25; // height of a single "line" of incoming gestures
 var ENEMY_SCREEN_CROSS_TIME = 1000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
-var V_OFFSET =100;
+var V_OFFSET =0;
 var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
 var types= ["rock", "lightning", "fireball"];
 var oldestEnemy = 0; // keeps track of the oldest enemy in enemies
@@ -110,7 +110,6 @@ function changeLives(delta) {
 /////////////////////////////////////////////////
 function Character() {
     this.lane = 1;
-    this.health = 100;
     this.sheet = new createjs.SpriteSheet({
             images: ['./res/character.png'],
             frames: {
@@ -135,13 +134,13 @@ function Character() {
             }
         });
     this.sprite = new createjs.Sprite(this.sheet);
-    this.sprite.x = 100;
-    this.sprite.y = 200;
+    this.sprite.x = 25;
+    this.sprite.y = V_OFFSET + 10 + 2 * LINE_HEIGHT;
     this.looseLife = function () {
         changeLives(-1);
     }
     this.setY = function() {
-        this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
+        this.sprite.y = V_OFFSET + 10 + LINE_HEIGHT* (this.lane + 1);
     }
     // Add Shape instance to stage display list.
     stage.addChild(this.sprite);
@@ -274,7 +273,7 @@ function Enemy(hitTime, type, lane) {
     this.type= type;
     this.dead = false;
     this.lane = lane;
-    this.enemy.y = V_OFFSET+ 100*lane;
+    this.enemy.y = V_OFFSET + 10 + LINE_HEIGHT * (lane + 1);
     this.enemy.x = CANVAS_WIDTH + 2000;//offscreen hack
     this.remove = function () {
         stage.removeChild(this.enemy);
@@ -355,19 +354,17 @@ function Background() {
     this.draw = function() {
         for (i = 0 ; i < this.sprites.length; i++) {
             this.sprites[i].x -= 2;
-            if (this.sprites[i].x < -3000) this.sprites[i].x += 3000*(this.sprites.length);
+            if (this.sprites[i].x < -1313) this.sprites[i].x += 1313*(this.sprites.length);
         }
         stage.update();
     };
 
     this.resize = function() {
         this.sprites = [];
-        for (i = 0; i < CANVAS_WIDTH + 3000; i+= 3000) {
+        for (i = 0; i < CANVAS_WIDTH + 1313; i+= 1313) {
             this.sprites.push(new createjs.Bitmap(this.file));
             this.sprites[this.sprites.length - 1].x = i;
-            this.sprites[this.sprites.length - 1].y = -30;
-            this.sprites[this.sprites.length - 1].scaleX = 2;
-            this.sprites[this.sprites.length - 1].scaleY = 2;
+            this.sprites[this.sprites.length - 1].y = V_OFFSET;
             stage.addChild(this.sprites[this.sprites.length - 1]);
         }
     };
@@ -382,19 +379,17 @@ function Parallax() {
     this.draw = function() {
         for (i = 0 ; i < this.sprites.length; i++) {
             this.sprites[i].x -= 1;
-            if (this.sprites[i].x < -1024) this.sprites[i].x += 1024*(this.sprites.length);
+            if (this.sprites[i].x < -512) this.sprites[i].x += 512*(this.sprites.length);
         }
         stage.update();
     };
 
     this.resize = function() {
         this.sprites = [];
-        for (i = 0; i < CANVAS_WIDTH + 1024; i+= 1024) {
+        for (i = 0; i < CANVAS_WIDTH + 512; i+= 512) {
             this.sprites.push(new createjs.Bitmap(this.file));
             this.sprites[this.sprites.length - 1].x = i;
-            this.sprites[this.sprites.length - 1].y = 50;
-            this.sprites[this.sprites.length - 1].scaleX = 2;
-            this.sprites[this.sprites.length - 1].scaleY = 2;
+            this.sprites[this.sprites.length - 1].y = V_OFFSET;
             stage.addChild(this.sprites[this.sprites.length - 1]);
         }
     };
@@ -457,13 +452,15 @@ function initGame() {
 function init () {
     var canvas = document.getElementById("canvas");
     stage = new createjs.Stage("canvas");
+    stage.scaleX = 4;
+    stage.scaleY = 4;
     background = new Background();
     parallax = new Parallax();
     function resizeCanvas (){
         canvas.width=window.innerWidth-20;
         canvas.height=window.innerHeight-150;
-        CANVAS_WIDTH=canvas.width;
-        CANVAS_HEIGHT=canvas.height;
+        CANVAS_WIDTH=0.25*canvas.width;
+        CANVAS_HEIGHT=0.25*canvas.height;
         parallax.resize.bind(parallax)();
         background.resize.bind(background)();
     }
