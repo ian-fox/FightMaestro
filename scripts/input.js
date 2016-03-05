@@ -9,7 +9,7 @@ window.onkeydown = function(event) { // use keydown until we get myo to cooperat
       onPose("move_right");
       break;
     case "KeyD":
-      onPose("fist");
+      onPose("rock");
       break;
     case "KeyF":
       onPose("fireball");

@@ -121,11 +121,11 @@ function Projectile (lane, type){
 
     this.proj = new createjs.Shape();
     var color;
-    if (type = types[0])
-        color = "brown";
-    if (type = types[1])
+    if (type ===0)
+        color = "Brown";
+    if (type ===1)
         color = "DeepSkyBlue";
-    if (type = types[2])
+    if (type ===2)
         color = "Red";
 
     this.proj.graphics.beginFill(color).drawCircle(0, 0, 50);
@@ -160,8 +160,8 @@ function drawProjectiles() {
     stage.update();
 }
 
-function createProjectile(gesture) {
-    var proj = new Projectile(player.lane, gesture);
+function createProjectile(type) {
+    var proj = new Projectile(player.lane, type);
     projectiles.push(proj);
 }
 
@@ -171,7 +171,7 @@ function createProjectile(gesture) {
 function Enemy(hitTime, type, lane) {
     //Create a Shape DisplayObject.
     var image="res/";
-    switch (types.indexOf(type)){
+    switch (type){
         case 0:
             image += "rock.png";
             break;
@@ -208,8 +208,6 @@ function Enemy(hitTime, type, lane) {
         this.dead=true;
         changeScore(scoreChange);
         setTimeout(this.remove.bind(this), 200);
-        var ref = getFirstEnemyByLane(this.lane).enemy;
-
     }
 }
 function getFirstEnemyByLane(lane) {
@@ -230,7 +228,7 @@ function generateEnemy() {
     } else {
         oldestEnemy += time;
     }
-    var beat = new Enemy (oldestEnemy, types[type], lane);
+    var beat = new Enemy (oldestEnemy, type, lane);
     return beat;
 }
 
@@ -269,7 +267,7 @@ function onPose(gesture) {
             player.setY();
             break;
         default:
-            createProjectile(gesture);
+            createProjectile(types.indexOf(gesture));
     }
 }
 
