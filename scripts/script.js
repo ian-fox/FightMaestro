@@ -18,6 +18,62 @@ var lives = 3;
 var livesElt;
 var player; 
 var projectiles = []; //array of players on the screen
+var enemySheets = {
+    rock : new createjs.SpriteSheet({
+        images: ['./res/rock.png'],
+        frames: {
+            width: 100, 
+            height: 100
+        },
+        animations: {
+            walk: {
+                frames: [0, 1, 2, 3],
+                speed: 0.05,
+                next: "walk"
+            },
+            die: {
+                frames: [12, 13, 14, 15],
+                speed: 0.05
+            }
+        }
+    }),
+    fireball : new createjs.SpriteSheet({
+        images: ['./res/fire.png'],
+        frames: {
+            width: 100, 
+            height: 100
+        },
+        animations: {
+            walk: {
+                frames: [0, 1, 2, 3, 4],
+                speed: 0.05,
+                next: "walk"
+            },
+            die: {
+                frames: [11, 12, 13, 14, 15],
+                speed: 0.05
+            }
+        }
+    }),
+    lightning : new createjs.SpriteSheet({
+        images: ['./res/lightning.png'],
+        frames: {
+            width: 100, 
+            height: 100
+        },
+        animations: {
+            walk: {
+                frames: [0, 1, 2, 3, 4],
+                speed: 0.05,
+                next: "walk"
+            },
+            die: {
+                frames: [12, 13, 14, 15],
+                speed: 0.05
+            }
+        }
+    })
+}
 
 /////////////////////////////////////////////////
 // GRAPHICS 
@@ -64,22 +120,22 @@ function drawGuides(){
 function Character() {
     this.lane = 1;
     this.health = 100;
-    this.animation = "idle";
-    this.frame = 0;
     this.sheet = new createjs.SpriteSheet({
-            images: ['./res/char.png'],
+            images: ['./res/character.png'],
             frames: {
                 width: 100, 
                 height: 100
             },
             animations: {
-                idle: {
-                    frames: [0, 1, 2, 3],
-                    speed: 0.05
+                walk: {
+                    frames: [0, 1, 2, 3, 14],
+                    speed: 0.05,
+                    next: "walk"
                 },
                 shoot: {
                     frames: [4, 5, 6, 8],
-                    speed: 0.05
+                    speed: 0.05,
+                    next: "walk"
                 },
                 die: {
                     frames: [9, 10, 11, 12, 13],
@@ -102,15 +158,9 @@ function Character() {
     }
     // Add Shape instance to stage display list.
     stage.addChild(this.sprite);
-    this.sprite.gotoAndPlay("idle");
+    this.sprite.gotoAndPlay("walk");
     // Update stage will render next frame
     this.draw = function() {
-        this.frame++;
-        if ((this.animation === "idle" || this.animation === "shoot") && this.frame > 29) {
-            this.frame = 0;
-            this.animation = "idle";
-            this.sprite.gotoAndPlay("idle");
-        }
         stage.update();
     }
 
@@ -119,8 +169,6 @@ function Character() {
     }
 
     this.shoot = function() {
-        this.frame = 0;
-        this.animation = "shoot";
         this.sprite.gotoAndPlay("shoot");
     }
 }
@@ -198,8 +246,6 @@ function drawProjectiles() {
 }
 
 function createProjectile(type) {
-    console.log(type);
-    console.log(types[type]);
     var proj = new Projectile(player.lane, type);
     projectiles.push(proj);
 }
@@ -208,22 +254,9 @@ function createProjectile(type) {
 // ENEMY RELATED STUFF
 /////////////////////////////////////////////////
 function Enemy(hitTime, type, lane) {
-    //Create a Shape DisplayObject.
-    var image="res/";
-    switch (type){
-        case 0:
-            image += "rock.png";
-            break;
-        case 1:
-            image += "lightning.png";
-            break;
-        case 2:
-            image += "fireball.png";
-            break;
-    }
-    this.enemy= new createjs.Bitmap(image);
-    //Add Shape instance to stage display list.
+    this.enemy = new createjs.Sprite(enemySheets[types[type]]);
     stage.addChild(this.enemy);
+    this.enemy.gotoAndPlay("walk");
     //Update stage will render next frame
     this.hitTime= hitTime;
     this.type= type;
@@ -245,6 +278,7 @@ function Enemy(hitTime, type, lane) {
     // call this if this beat is killed
     this.kill = function (scoreChange) {
         this.dead=true;
+        this.enemy.gotoAndPlay("die");
         changeScore(scoreChange);
         setTimeout(this.remove.bind(this), 200);
     }
