@@ -113,7 +113,7 @@ function Projectile (lane, type){
     this.lane = lane;
     this.lastUpdate = new Date().getTime();
     this.sheet = new createjs.SpriteSheet({
-            images: ['./res/attacks.png'],
+            images: ['./res/Attacks.png'],
             frames: {
                 width: 50, 
                 height: 50
