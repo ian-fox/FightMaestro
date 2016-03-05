@@ -163,13 +163,11 @@ function Character() {
     this.setY = function() {
         this.sprite.y = V_OFFSET + 10 + LINE_HEIGHT* (this.lane + 1);
     }
+    this.sprite.type = "player";
     // Add Shape instance to stage display list.
     stage.addChild(this.sprite);
     this.sprite.gotoAndPlay("walk");
     // Update stage will render next frame
-    this.draw = function() {
-        //stage.update();
-    }
     this.remove = function () {
         stage.removeChild(this.sprite);
     }
@@ -286,6 +284,8 @@ function createProjectile(type) {
 /////////////////////////////////////////////////
 function Enemy(hitTime, type, lane) {
     this.enemy = new createjs.Sprite(enemySheets[types[type]]);
+    this.enemy.type = "enemy";
+    this.enemy.lane = lane;
     stage.addChild(this.enemy);
     this.enemy.gotoAndPlay("idle");
     //Update stage will render next frame
@@ -455,9 +455,27 @@ function gameOver() {
     setTimeout(initGame, 2000);
 }
 
+function orderEntities() {
+    var playerIndex;
+    for (var i = 0; i < stage.children.length; i++) {
+        entity = stage.children[i];
+        if (entity.type === "player") {
+            playerIndex = stage.getNumChildren() - 1;
+            stage.setChildIndex(playerIndex);
+        }
+    }
+    for (var i = 0; i < stage.children.length; i++) {
+        entity = stage.children[i];
+        if (entity.type === "enemy" && entity.lane > player.lane && i < playerIndex) {
+            stage.setChildIndex(entity, stage.getNumChildren() - 1);
+            playerIndex--;
+            i--;
+        }
+    }
+}
+
 function drawEntities() {
-    //orderEnemies();
-    player.draw.bind(player)();
+    orderEntities();
     drawEnemies();
     drawProjectiles();
     parallax.draw.bind(parallax)();
