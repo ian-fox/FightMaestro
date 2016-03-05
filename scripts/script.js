@@ -347,14 +347,30 @@ function drawEnemies () {
 // BACKGROUND
 /////////////////////////////////////////////////
 function Background() {
-    
-    this.draw = function() {
+    this.file = document.createElement("img");
+    this.file.onload = "draw";
+    this.file.src="res/background.png"
+    this.sprites = [];
 
-    }
+    this.draw = function() {
+        for (i = 0 ; i < this.sprites.length; i++) {
+            this.sprites[i].x -= 2;
+            if (this.sprites[i].x < -3000) this.sprites[i].x += 3000*(this.sprites.length);
+        }
+        stage.update();
+    };
 
     this.resize = function() {
-
-    }
+        this.sprites = [];
+        for (i = 0; i < CANVAS_WIDTH + 3000; i+= 3000) {
+            this.sprites.push(new createjs.Bitmap(this.file));
+            this.sprites[this.sprites.length - 1].x = i;
+            this.sprites[this.sprites.length - 1].y = -30;
+            this.sprites[this.sprites.length - 1].scaleX = 2;
+            this.sprites[this.sprites.length - 1].scaleY = 2;
+            stage.addChild(this.sprites[this.sprites.length - 1]);
+        }
+    };
 }
 
 function Parallax() {
@@ -365,23 +381,26 @@ function Parallax() {
 
     this.draw = function() {
         for (i = 0 ; i < this.sprites.length; i++) {
-            this.sprites[i].X -= 10;
-            if (this.sprites[i].x < -512) this.sprites[i].x += 512*(this.sprites.length - 1);
+            this.sprites[i].x -= 1;
+            if (this.sprites[i].x < -1024) this.sprites[i].x += 1024*(this.sprites.length);
         }
         stage.update();
     };
 
     this.resize = function() {
-        console.log("here");
         this.sprites = [];
-        for (i = 0; i < CANVAS_WIDTH; i+= 512) {
-            this.sprites.append(new createjs.Bitmap(this.file));
-            this.sprites[this.sprites.length - 1].X = i;
-            this.sprites[this.sprites.length - 1].Y = 50;
+        for (i = 0; i < CANVAS_WIDTH + 1024; i+= 1024) {
+            this.sprites.push(new createjs.Bitmap(this.file));
+            this.sprites[this.sprites.length - 1].x = i;
+            this.sprites[this.sprites.length - 1].y = 50;
+            this.sprites[this.sprites.length - 1].scaleX = 2;
+            this.sprites[this.sprites.length - 1].scaleY = 2;
             stage.addChild(this.sprites[this.sprites.length - 1]);
         }
     };
 }
+
+
 
 /////////////////////////////////////////////////
 // INTERACTION WITH MYO 
@@ -431,7 +450,8 @@ function initGame() {
     createjs.Ticker.addEventListener("tick", player.draw.bind(player));
     createjs.Ticker.addEventListener("tick", drawEnemies);
     createjs.Ticker.addEventListener("tick", drawProjectiles);
-
+    createjs.Ticker.addEventListener("tick", parallax.draw.bind(parallax));
+    createjs.Ticker.addEventListener("tick", background.draw.bind(background));
 }
 
 function init () {
@@ -444,8 +464,8 @@ function init () {
         canvas.height=window.innerHeight-150;
         CANVAS_WIDTH=canvas.width;
         CANVAS_HEIGHT=canvas.height;
-        background.resize.bind(background);
-        parallax.resize.bind(parallax);
+        parallax.resize.bind(parallax)();
+        background.resize.bind(background)();
     }
     resizeCanvas();
 
