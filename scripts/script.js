@@ -1,21 +1,19 @@
-var beatMap = [];
+var enemies = [];
 var startTime = 0;
-var MAP_LENGTH = 50000; // length of the beatmap in ms
 var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
-var MS_PER_BEAT = 1000; 
 var CANVAS_HEIGHT= 900; // width of canvas
-var CAR_IMAGE=0;
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
 var V_OFFSET =100;
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
-var badguys= ["fist", "lighting", "fireball"];
-var oldestEnemy = 0;
-var lanes = 3;
+var types= ["rock", "lighting", "fireball"];
+var oldestEnemy = 0; // keeps track of the oldest enemy in enemies
+var lanes = 3; // lanes of attack
 var guides = [];// set of horizontal line guides for showing incoming jazz
-var score = 0;
-var scoreElt;
-var player;
+var score = 0; 
+var scoreElt; //element to store the Score div
+var player; 
+var projectiles = []; //array of players on the screen
 
 /////////////////////////////////////////////////
 // GRAPHICS 
@@ -65,15 +63,54 @@ function Character() {
     }
 }
 
+/////////////////////////////////////////////////
+// PROJECTILES
+/////////////////////////////////////////////////
 
+function Projectile (lane, type){
+    this.lane = lane;
+    this.type = type;
+    /* IMAGE HANDLING IAN DO THIS PART
+    var image="res/";
+    switch (types.indexOf(type)){
+        case 0:
+            image += "rock.png";
+            break;
+        case 1:
+            image += "lightning.png";
+            break;
+        case 2:
+            image += "fireball.png";
+            break;
+    }
+    this.enemy= new createjs.Bitmap(image);
+    */
+    this.type= type;
+    this.lane = lane;
+
+    this.proj = new createjs.Shape();
+    this.proj.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+    this.proj.x = player.x+100;
+    this.proj.y = player.y+50;
+    stage.addChild(this.proj);
+
+    this.remove = function () {
+        stage.removeChild(this.proj);
+    }
+
+}
+
+function handleGesture(gesture) {
+    //var proj = new Projectile(player.lane, bad
+}
 
 /////////////////////////////////////////////////
 // ENEMY RELATED STUFF
 /////////////////////////////////////////////////
-function Beat(hitTime, type, lane) {
+function Enemy(hitTime, type, lane) {
     //Create a Shape DisplayObject.
     var image="res/";
-    switch (badguys.indexOf(type)){
+    switch (types.indexOf(type)){
         case 0:
             image += "fist.png";
             break;
@@ -111,7 +148,7 @@ function Beat(hitTime, type, lane) {
         changeScore(scoreChange);
         setTimeout(this.remove.bind(this), 200);
         var ref = getFirstEnemyByLane(this.lane).enemy;
-        beatMap=beatMap.filter(function (entry) {
+        enemies=enemies.filter(function (entry) {
             if (ref === entry)
                 return false;
             return true;
@@ -119,9 +156,9 @@ function Beat(hitTime, type, lane) {
     }
 }
 function getFirstEnemyByLane(lane) {
-    for (var i = 0; i < beatMap.length; i ++) {
-        if (beatMap[i].lane == lane){
-            return {enemy:beatMap[i], index:i};
+    for (var i = 0; i < enemies.length; i ++) {
+        if (enemies[i].lane == lane){
+            return {enemy:enemies[i], index:i};
         }
     }
     return null;
@@ -129,28 +166,28 @@ function getFirstEnemyByLane(lane) {
 
 function generateEnemy() {
     var lane= Math.floor(Math.random() * lanes);
-    var type= Math.floor(Math.random() * badguys.length);
+    var type= Math.floor(Math.random() * types.length);
     var time = Math.max(1000, Math.floor(Math.random() * 2000));
     if (oldestEnemy == 0) {
         oldestEnemy = START_DELAY;
     } else {
         oldestEnemy += time;
     }
-    var beat = new Beat (oldestEnemy, badguys[type], lane);
+    var beat = new Enemy (oldestEnemy, types[type], lane);
     return beat;
 }
 
 function generateMap () {
     for (var i =0; i < 20; i++){
-        beatMap.push(generateEnemy());
+        enemies.push(generateEnemy());
     }
 }
 
-function drawBeats () {
-    if (beatMap.length < 20){
-        beatMap.push(generateEnemy());
+function drawEnemies () {
+    if (enemies.length < 20){
+        enemies.push(generateEnemy());
     }
-    beatMap.forEach(function (entry) {
+    enemies.forEach(function (entry) {
         //console.log(entry.hitTime - new Date().getTime());
         //console.log(entry);
         entry.setX();
@@ -174,7 +211,7 @@ function onPose(gesture) {
             player.setY();
             break;
         default:
-            console.log(gesture);
+            handleGesture(gesture);
     }
 }
 
@@ -203,7 +240,7 @@ function init () {
     drawGuides();
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", player.draw);
-    createjs.Ticker.addEventListener("tick", drawBeats);
+    createjs.Ticker.addEventListener("tick", drawEnemies);
 }
 
 window.onload = init;
