@@ -318,7 +318,7 @@ function Enemy(hitTime, type, lane) {
         this.dead=true;
         this.enemy.gotoAndPlay("die");
         changeScore(scoreChange);
-        setTimeout(this.remove.bind(this), 200);
+        setTimeout(this.remove.bind(this), 400);
     }
 }
 function getLane(lane) {
@@ -345,7 +345,7 @@ function generateEnemy() {
 
 function initEnemies () {
     enemies=enemies.filter(function (entry) {
-        retern (!entry.dead);   
+        return (!entry.dead);   
     });
     oldestEnemy=0;
     for (var i =0; i < 10; i++){
@@ -408,7 +408,7 @@ function Parallax() {
 
     this.draw = function() {
         for (i = 0 ; i < this.sprites.length; i++) {
-            this.sprites[i].x -= 1;
+            this.sprites[i].x -= 3700/ENEMY_SCREEN_CROSS_TIME;
             if (this.sprites[i].x < -512) this.sprites[i].x += 512*(this.sprites.length);
         }
     };
@@ -464,6 +464,10 @@ function gameOver() {
     elt.appendChild(span);
     elt.id="gameOver";
     document.body.appendChild(elt);
+    for (var i = 0; i < enemies.length; i++) {
+        stage.removeChild(enemies[i]);
+    }
+
 
     createjs.Ticker.removeAllEventListeners();
     setTimeout(function () {
@@ -550,26 +554,7 @@ function initMenu() {
     $("#backButton").hide();
     blink();
 
-    //LOAD SOUND
-    createjs.Sound.alternateExtension = ["mp3"];
-    createjs.Sound.registerSounds(
-            [{id:"theme", src:"res/theme.mp3"},
-            {id:"hit1", src:"res/hitsounds/hit1.ogg"},
-            {id:"hit2", src:"res/hitsounds/hit2.ogg"},
-            {id:"hit3", src:"res/hitsounds/hit3.ogg"},
-            {id:"hit4", src:"res/hitsounds/hit4.ogg"},
-            {id:"hit5", src:"res/hitsounds/hit5.ogg"}]);
-
-    createjs.Sound.on("fileload", handleFileLoad);
-    function handleFileLoad (event) {
-        if (!theme && event.id=="theme"){
-            theme = createjs.Sound.play("theme", {interrupt: createjs.Sound.INTERRUPT_ANY, loop:1});
-            theme.volume = 0.1;
-            theme.on("complete", this.handleComplete, this);
-        } else if (event.id.match(/hit*/)){
-            hitsounds.push(event.id);
-        }
-    }
+    
 }
 
 function playSound(id) {
@@ -624,6 +609,27 @@ function init () {
     resizeCanvas();
 
     window.addEventListener('resize', resizeCanvas, false);
+
+    //LOAD SOUND
+    createjs.Sound.alternateExtension = ["mp3"];
+    createjs.Sound.registerSounds(
+            [{id:"theme", src:"res/theme.mp3"},
+            {id:"hit1", src:"res/hitsounds/hit1.ogg"},
+            {id:"hit2", src:"res/hitsounds/hit2.ogg"},
+            {id:"hit3", src:"res/hitsounds/hit3.ogg"},
+            {id:"hit4", src:"res/hitsounds/hit4.ogg"},
+            {id:"hit5", src:"res/hitsounds/hit5.ogg"}]);
+
+    createjs.Sound.on("fileload", handleFileLoad);
+    function handleFileLoad (event) {
+        if (!theme && event.id=="theme"){
+            theme = createjs.Sound.play("theme", {interrupt: createjs.Sound.INTERRUPT_ANY, loop:1});
+            theme.volume = 0.1;
+        } else if (event.id.match(/hit*/)){
+            hitsounds.push(event.id);
+        }
+    }
+
     initMenu();
 }
 
