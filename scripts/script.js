@@ -13,6 +13,7 @@ var ANIMATION_SPEED = {
     rock: 0.05,
     lightning: 0.08
 };
+var hitsounds = [];
 var V_OFFSET =0;
 var START_DELAY = 3000+ENEMY_SCREEN_CROSS_TIME; // delay until the game starts var MS_PER_BEAT = 1000; 
 var types= ["rock", "lightning", "fireball"];
@@ -313,6 +314,7 @@ function Enemy(hitTime, type, lane) {
     this.setX();
     // call this if this beat is killed
     this.kill = function (scoreChange) {
+        playSound(hitsounds[Math.floor(Math.random() * hitsounds.length)]);
         this.dead=true;
         this.enemy.gotoAndPlay("die");
         changeScore(scoreChange);
@@ -550,16 +552,29 @@ function initMenu() {
 
     //LOAD SOUND
     createjs.Sound.alternateExtension = ["mp3"];
-    createjs.Sound.registerSound({id:"theme", src:"res/theme.mp3"});
+    createjs.Sound.registerSounds(
+            [{id:"theme", src:"res/theme.mp3"},
+            {id:"hit1", src:"res/hitsounds/hit1.ogg"},
+            {id:"hit2", src:"res/hitsounds/hit2.ogg"},
+            {id:"hit3", src:"res/hitsounds/hit3.ogg"},
+            {id:"hit4", src:"res/hitsounds/hit4.ogg"},
+            {id:"hit5", src:"res/hitsounds/hit5.ogg"}]);
+
     createjs.Sound.on("fileload", handleFileLoad);
     function handleFileLoad (event) {
-        console.log(event);
-        if (!theme){
-            theme = createjs.Sound.play("theme");
+        if (!theme && event.id=="theme"){
+            theme = createjs.Sound.play("theme", {interrupt: createjs.Sound.INTERRUPT_ANY, loop:1});
             theme.volume = 0.1;
             theme.on("complete", this.handleComplete, this);
+        } else if (event.id.match(/hit*/)){
+            hitsounds.push(event.id);
         }
     }
+}
+
+function playSound(id) {
+    var sound = createjs.Sound.play(id);
+    sound.volume=0.8;
 }
 
 function showControls() {
