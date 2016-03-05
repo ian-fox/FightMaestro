@@ -62,7 +62,12 @@ var enemySheets = {
                 speed: ANIMATION_SPEED.rock,
                 next: "dead"
             },
-            dead: [15]
+            dead: [15],
+            block: {
+                frames: [8, 9, 9, 9],
+                speed: ANIMATION_SPEED.rock * 2,
+                next: "idle"
+            }
         }
     }),
     fireball : new createjs.SpriteSheet({
@@ -87,7 +92,12 @@ var enemySheets = {
                 speed: ANIMATION_SPEED.fireball,
                 next: dead
             },
-            dead: [15]
+            dead: [15],
+            block: {
+                frames: [9, 10, 10, 10],
+                speed: ANIMATION_SPEED.fire * 2,
+                next: "idle"
+            }
         }
     }),
     lightning : new createjs.SpriteSheet({
@@ -112,7 +122,12 @@ var enemySheets = {
                 speed: ANIMATION_SPEED.lightning,
                 next: "dead"
             },
-            dead: [15]
+            dead: [15],
+            block: {
+                frames: [8, 9, 9, 9],
+                speed: ANIMATION_SPEED.lightning * 2,
+                next: "idle"
+            }
         }
     })
 }
