@@ -31,6 +31,13 @@ var stage;
 var background;
 var parallax;
 var MENU = true;
+var controlsText = "Hold your arm out horizontally.<br><br>"
+    + "Flick your wrist up or down to change lanes.<br><br>"
+    + "Double tap to throw a fireball.<br>"
+    + "Spread your fingers to launch ball lightning.<br>"
+    + "Make a fist to ... do something<br><br>"
+    + "Each enemy is vulnerable only to a specific attack.<br><br>"
+    + "Don't let enemies get passed you!"
 var enemySheets = {
     rock : new createjs.SpriteSheet({
         images: ['./res/rock.png'],
@@ -511,33 +518,60 @@ function initMenu() {
         drawProjectiles();
         stage.update();
     });
-    var chooseText = document.createElement("div");
-    chooseText.id="chooseText";
-    chooseText.innerHTML="Select a mode.";
-    document.body.appendChild(chooseText);
+    var insertCoin = document.createElement("div");
+    insertCoin.id="insertCoin";
+    insertCoin.innerHTML="Insert Coin";
+    document.body.appendChild(insertCoin);
 
-    var singleplayer = document.createElement("div");
-    singleplayer.id="singleplayer";
-    document.body.appendChild(singleplayer);
-    $("#singleplayer").html("Singleplayer").addClass("menuButton");
-    $("#singleplayer").click(startGame);
-    var multiplayer = document.createElement("div");
-    multiplayer.id="multiplayer";
-    document.body.appendChild(multiplayer);
-    $("#multiplayer").html("Multiplayer").addClass("menuButton");
-    //$("#multiplayer").click(startGame(true));
+    var playbutton = document.createElement("div");
+    playbutton.id="playButton";
+    document.body.appendChild(playbutton);
+    $("#playButton").html("Play").addClass("menu menuButton");
+    $("#playButton").click(startGame);
+    var controlsbutton = document.createElement("div");
+    controlsbutton.id="controlsButton";
+    document.body.appendChild(controlsbutton);
+    $("#controlsButton").html("Controls").addClass("menu menuButton");
+    $("#controlsButton").click(showControls);
+    var controls = document.createElement("div");
+    controls.id="controls";
+    document.body.appendChild(controls);
+    $("#controls").html(controlsText).addClass("menu");
+    $("#controls").hide();
+    var backbutton = document.createElement("div");
+    backbutton.id = "backButton";
+    document.body.appendChild(backbutton);
+    $("#backButton").html("Back").addClass("menu menuButton");
+    $("#backButton").click(hideControls);
+    $("#backButton").hide();
     blink();
 }
 
-function startGame(multiplayer) {
+function showControls() {
+    $("#playButton").hide();
+    $("#controlsButton").hide();
+    $("#insertCoin").hide();
+    $("#controls").show();
+    $("#backButton").show();
+}
+
+function hideControls() {
+    $("#playButton").show();
+    $("#controlsButton").show();
+    $("#insertCoin").show();
+    $("#controls").hide();
+    $("#backButton").hide();
+}
+
+function startGame() {
     menu = false;
     $(".menuButton").remove();
-    $("#chooseText").remove();
+    $("#insertCoin").remove();
     initGame();
 }
 
 function blink () {
-    $("#chooseText").toggleClass("transparent");
+    $("#insertCoin").toggleClass("transparent");
     if (menu) setTimeout(blink, 1000);
 }
 
