@@ -9,7 +9,7 @@ var CAR_IMAGE=0;
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
 var badguys= ["fist", "lighting", "fireball"];
-var lanes = 2;
+var lanes = 3;
 var guides = [];// set of horizontal line guides for showing incoming jazz
 
 
@@ -59,8 +59,8 @@ function getFirstEnemyByLane(lane) {
 function generateMap () {
     if (!beatMap.length) {
         for (var i =0; i < MAP_LENGTH; i+=MS_PER_BEAT* Math.max(Math.random()*3,1)){
-            var lane= Math.floor(Math.random() * 3);
-            var type= Math.floor(Math.random() * 3);
+            var lane= Math.floor(Math.random() * lanes);
+            var type= Math.floor(Math.random() * lanes);
             var beat = new Beat (i + START_DELAY, badguys[type], lane);
             beatMap.push(beat);
         }
