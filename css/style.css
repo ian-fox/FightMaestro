@@ -32,18 +32,28 @@ body {
   font-size:64pt;
   font: share-regular, 'Arial Narrow', sans-serif;
   text-decoration: blink;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 .transparent {
   display: none;
 }
 .menuButton {
   border-radius: 20px;
-  background-color: #aaa;
+  border: 1px solid #fff;
   width: 300px;
   height: 100px;
   color: #fff;
   font-size: 32pt;
   padding-top: 1em;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
 }
 #singleplayer {
   position: absolute;
