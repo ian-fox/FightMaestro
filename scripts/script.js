@@ -436,6 +436,9 @@ function gameOver() {
     document.body.appendChild(elt);
 
     createjs.Ticker.removeAllEventListeners();
+    setTimeout(function () {
+        document.body.removeChild(elt);
+    }.bind(this), 2000);
     setTimeout(initGame, 2000);
 }
 
