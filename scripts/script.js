@@ -4,7 +4,7 @@ var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var CANVAS_HEIGHT= 900; // width of canvas
 var LINE_HEIGHT = 100; // height of a single "line" of incoming gestures
-var ENEMY_SCREEN_CROSS_TIME = 3000; // time taken by an enemy crossing the scren
+var ENEMY_SCREEN_CROSS_TIME = 4000; // time taken by an enemy crossing the scren
 var PROJECTILE_SCREEN_CROSS_TIME = 1000; //time taken by a projectile crossing the screen
 var V_OFFSET =100;
 var START_DELAY = 3000; // delay until the game starts var MS_PER_BEAT = 1000; 
@@ -14,6 +14,8 @@ var lanes = 3; // lanes of attack
 var guides = [];// set of horizontal line guides for showing incoming jazz
 var score = 0; 
 var scoreElt; //element to store the Score div
+var lives = 3;
+var livesElt;
 var player; 
 var projectiles = []; //array of players on the screen
 
@@ -30,6 +32,17 @@ function changeScore(delta) {
     score += delta;
     scoreElt.innerHTML = score;
 
+}
+
+function initLives () {
+    lives = 3;
+    livesElt=document.getElementById("lives");
+    lives.innerHTML = lives;
+}
+
+function changeLives(delta) {
+    lives += delta;
+    livesElt.innerHTML= lives;
 }
 
 function drawGuides(){
@@ -77,6 +90,13 @@ function Character() {
     this.sprite = new createjs.Sprite(this.sheet);
     this.sprite.x = 100;
     this.sprite.y = 200;
+    this.looseLife = function () {
+        changeLives(-1);
+        if (lives<1){
+            // TODO game over animation thing
+            gameOver();
+        }
+    }
     this.setY = function() {
         this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
     }
@@ -92,6 +112,10 @@ function Character() {
             this.sprite.gotoAndPlay("idle");
         }
         stage.update();
+    }
+
+    this.checkCollision = function () {
+        //TODO collisions with enemies here
     }
 
     this.shoot = function() {
@@ -142,7 +166,7 @@ function Projectile (lane, type){
 
     this.proj.scaleX=2;
     this.proj.scaleY=2;
-    this.proj.x = player.sprite.x+100;
+    this.proj.x = player.sprite.x+40;
     this.proj.y = player.sprite.y;
     stage.addChild(this.proj);
 
@@ -247,14 +271,18 @@ function generateEnemy() {
     return beat;
 }
 
-function generateMap () {
-    for (var i =0; i < 20; i++){
+function initEnemies () {
+    enemies=enemies.filter(function (entry) {
+        entry.remove();
+        return false;
+    });
+    for (var i =0; i < 10; i++){
         enemies.push(generateEnemy());
     }
 }
 
 function drawEnemies () {
-    if (enemies.length < 20){
+    if (enemies.length < 10){
         enemies.push(generateEnemy());
     }
     enemies = enemies.filter(function (entry) {
@@ -290,8 +318,31 @@ function onPose(gesture) {
 }
 
 /////////////////////////////////////////////////
-// INITIALIZATION
+// GAME LOGIC
 /////////////////////////////////////////////////
+
+function gameOver() {
+    createjs.Ticker.removeAllEventListeners();
+    //do css html popup shitter here
+
+    setTimeout(initGame, 2000);
+}
+
+function initGame() {
+    // BEGIN GAME STATE INITIALIZATION
+    startTime = new Date().getTime();
+    player = new Character();
+    initScore();
+    initLives();
+    initEnemies();
+    drawGuides();
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick", player.draw.bind(player));
+    createjs.Ticker.addEventListener("tick", drawEnemies);
+    createjs.Ticker.addEventListener("tick", drawProjectiles);
+
+}
+
 function init () {
     var canvas = document.getElementById("canvas");
     stage = new createjs.Stage("canvas");
@@ -305,20 +356,7 @@ function init () {
     resizeCanvas();
 
     window.addEventListener('resize', resizeCanvas, false);
-
-    //INIT COLLISION DETECTOR
-    ndgmr.col
-
-    // BEGIN GAME STATE INITIALIZATION
-    startTime = new Date().getTime();
-    player = new Character();
-    initScore();
-    generateMap();
-    drawGuides();
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", player.draw.bind(player));
-    createjs.Ticker.addEventListener("tick", drawEnemies);
-    createjs.Ticker.addEventListener("tick", drawProjectiles);
+    initGame();
 }
 
 window.onload = init;
