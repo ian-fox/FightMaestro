@@ -108,7 +108,7 @@ function Character() {
     this.lane = 1;
     this.health = 100;
     this.sheet = new createjs.SpriteSheet({
-            images: ['./res/char.png'],
+            images: ['./res/character.png'],
             frames: {
                 width: 100, 
                 height: 100
