@@ -85,7 +85,7 @@ function Character() {
     this.sprite.x = 100;
     this.sprite.y = 300;
     this.setY = function() {
-        this.sprite.y = 200 + 100 * this.lane;
+        this.sprite.y = V_OFFSET+ LINE_HEIGHT* this.lane;
     }
     // Add Shape instance to stage display list.
     stage.addChild(this.sprite);
