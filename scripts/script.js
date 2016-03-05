@@ -1,6 +1,6 @@
 var beatMap = [];
 var startTime = 0;
-var MAP_LENGTH = 20000; // length of the beatmap in ms
+var MAP_LENGTH = 50000; // length of the beatmap in ms
 var FONT = "share-regular,'Arial Narrow',sans-serif";
 var CANVAS_WIDTH= 900; // width of canvas
 var MS_PER_BEAT = 1000; 
@@ -12,19 +12,19 @@ var guides = [];// set of horizontal line guides for showing incoming jazz
 
 function Beat(hitTime, gesture) {
     //Create a Shape DisplayObject.
-    this.circle = new createjs.Shape();
-    this.circle.graphics.beginFill("red").drawCircle(0, 0, 40);
-    //Set position of Shape instance.
+    this.car= new createjs.Bitmap("res/car.png");
+    this.car.scaleY=0.3;
+    this.car.scaleX=0.3;
     //Add Shape instance to stage display list.
-    stage.addChild(this.circle);
+    stage.addChild(this.car);
     //Update stage will render next frame
     this.hitTime= hitTime;
     this.gesture = gesture;
-    this.circle.y = 200+ 100 * gestures.indexOf(gesture);
-    this.circle.x = 20000;//offscreen hack
+    this.car.y = 200+ 100 * gestures.indexOf(gesture);
+    this.car.x = 20000;//offscreen hack
     this.setX = function () {
-        if (this.circle.x > -500){
-            this.circle.x = 200+ startTime + this.hitTime - new Date().getTime();
+        if (this.car.x > -500){
+            this.car.x = 200+ startTime + this.hitTime - new Date().getTime();
         }
     }
     this.setX();
@@ -33,28 +33,24 @@ function Beat(hitTime, gesture) {
 function drawGuides(){
     for (var i = 1; i < (gestures.length +2); ++i ){ 
         var rect = new createjs.Shape();
-        rect.graphics.beginFill("black").drawRect(0,50+ i*LINE_HEIGHT, CANVAS_WIDTH, 5);
+        var color = (i == 1 || i == 5) ? "white" : "yellow";
+        rect.graphics.beginFill(color).drawRect(0,92+i*LINE_HEIGHT, CANVAS_WIDTH, 5);
         stage.addChild(rect);
         guides.push(rect);
-
-        if (i-1 < gestures.length) {
-            var text = new createjs.Text("hello", "20px Arial", "#ff7700");
-            text.textBaseline="middle";
-            text.lineWidth=100;
-            text.x = 20;
-            text.y=20;
-            text.maxWidth=1000;
-            console.log(text);
-            stage.addChild(rect);
-        }
 
     }
 
 }
 
+function drawBackground(){
+    var rect = new createjs.Shape();
+    rect.graphics.beginFill("#444444").drawRect(0,200, CANVAS_WIDTH, 5*LINE_HEIGHT);
+    //stage.addChild(rect);
+}
+
 function generateMap () {
     if (!beatMap.length) {
-        for (var i =0; i < MAP_LENGTH; i+=MS_PER_BEAT){ 
+        for (var i =0; i < MAP_LENGTH; i+=MS_PER_BEAT* Math.max(Math.random(),0.5)){
             var num = Math.floor(Math.random() * 4);
             var beat = new Beat (i + START_DELAY, gestures[num]);
             beatMap.push(beat);
@@ -75,7 +71,9 @@ function init () {
     stage = new createjs.Stage("canvas");
     startTime = new Date().getTime();
     generateMap();
+    drawBackground();
     drawGuides();
+    createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", drawBeats);
 }
 
