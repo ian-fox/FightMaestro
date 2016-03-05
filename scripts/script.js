@@ -22,6 +22,9 @@ var score = 0;
 var scoreElt; //element to store the Score div
 var lives = 99;
 var livesElt;
+var lane0=[];//its a hackathaon
+var lane1=[];//its caching to go fast
+var lane2=[];//dont touch
 var player; 
 var projectiles = []; //array of players on the screen
 var stage;
@@ -172,16 +175,6 @@ function Character() {
         stage.removeChild(this.sprite);
     }
 
-    this.checkCollision = function () {
-        var first = getFirstEnemyByLane(lane);
-        var intersection = ndgmr.checkPixelCollision(this.sprite, first.enemy.enemy);
-        if (intersection) {
-            first.enemy.kill(1);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     this.shoot = function() {
         this.sprite.gotoAndPlay("shoot");
@@ -249,16 +242,18 @@ function Projectile (lane, type){
         this.lastUpdate = new Date().getTime();
     }
     this.checkCollision=function() {
-        var first = getFirstEnemyByLane(lane);
-        var intersection = ndgmr.checkPixelCollision(this.proj, first.enemy.enemy);
-        if (intersection) {
-            if (first.enemy.type == this.type){
-                first.enemy.kill(1);
+        var lane = getLane(this.lane);
+        for (var i = 0; i < lane.length; i ++) {
+            var entry = lane[i];
+            var intersection = Math.abs(entry.enemy.x - this.proj.x) < CANVAS_WIDTH/10? 1 : 0;
+            if (intersection) {
+                if (entry.type == this.type){
+                    entry.kill(1);
+                }
+                return true;
             }
-            return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }
 
@@ -316,13 +311,13 @@ function Enemy(hitTime, type, lane) {
         setTimeout(this.remove.bind(this), 200);
     }
 }
-function getFirstEnemyByLane(lane) {
-    for (var i = 0; i < enemies.length; i ++) {
-        if (enemies[i].lane == lane){
-            return {enemy:enemies[i], index:i};
-        }
-    }
-    return null;
+function getLane(lane) {
+    if (lane == 0)
+        return lane0;
+    if (lane == 1)
+        return lane1;
+    if (lane == 2)
+        return lane2;
 }
 
 function generateEnemy() {
@@ -353,7 +348,17 @@ function drawEnemies (lane) {
     if (enemies.length < 10){
         enemies.push(generateEnemy());
     }
+    lane0.length=0;
+    lane1.length=0;
+    lane2.length=0;
     enemies = enemies.filter(function (entry) {
+        if (entry.lane==0){
+           lane0.push(entry);
+        } else if (entry.lane==1) {
+            lane1.push(entry);
+        } else if (entry.lane==2) {
+            lane2.push(entry);
+        }
         entry.setX();
         return !entry.dead;
     });
