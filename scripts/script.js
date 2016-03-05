@@ -22,7 +22,7 @@ var lanes = 3; // lanes of attack
 var guides = [];// set of horizontal line guides for showing incoming jazz
 var score = 0; 
 var scoreElt; //element to store the Score div
-var lives = 25;
+var lives = 10;
 var livesElt;
 var lane0=[];//its a hackathaon
 var lane1=[];//its caching to go fast
@@ -127,7 +127,7 @@ function changeScore(delta) {
 
 function initLives () {
     livesElt=$("#lives");
-    lives = 25;
+    lives = 10;
     livesElt.html(lives);
 }
 
