@@ -2,7 +2,7 @@
 
 A side scrolled beat em up featuring __gesture controls__, via the [Myo](https://www.myo.com/).
 
-![image of game](https://github.com/zvory/test)
+![image of game](https://raw.githubusercontent.com/ian-fox/FightMaestro/master/res/cover.png)
 
 [Play the game here](http://zvoryg.in/FightMaestro) or watch a [demo on youtube](https://www.youtube.com/watch?v=x3731WOsEBA).
 
